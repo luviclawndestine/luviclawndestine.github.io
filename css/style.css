@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+    --paper: #f2efe6;
+    --paper-dark: #e8e4d8;
+    --ink: #1a1a18;
+    --ink-light: #3a3a35;
+    --ink-faded: #6a6a60;
+    --rule: #1a1a18;
+    --rule-light: #c4c0b4;
+    --blue: #1a3a5c;
+    --red: #8b1a1a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+::selection { background: var(--ink); color: var(--paper); }
+
+/* ─── MASTHEAD ─── */
+.masthead {
+    text-align: center;
+    padding: 32px 20px 0;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.masthead-rule { border: none; border-top: 2px solid var(--rule); margin: 0; }
+.masthead-rule-thin { border: none; border-top: 0.5px solid var(--rule); margin: 0; }
+
+.masthead-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+}
+
+.masthead-title {
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: clamp(48px, 8vw, 80px);
+    font-weight: 400;
+    color: var(--ink);
+    padding: 12px 0 8px;
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+.masthead-subtitle {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-faded);
+    padding: 4px 0 12px;
+    letter-spacing: 0.5px;
+}
+
+.masthead-nav {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    padding: 10px 0;
+}
+.masthead-nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.masthead-nav a:hover { color: var(--ink); }
+.masthead-nav a.active { color: var(--ink); font-weight: 500; }
+
+/* ─── MAIN LAYOUT ─── */
+.broadsheet {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ─── HEADLINE ─── */
+.headline-section {
+    padding: 32px 0 28px;
+    text-align: center;
+    border-bottom: 1px solid var(--rule-light);
+}
+.headline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(28px, 4.5vw, 48px);
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    max-width: 800px;
+    margin: 0 auto 16px;
+}
+.headline-deck {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-light);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+.headline-byline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    margin-top: 16px;
+}
+
+/* ─── COLUMNS ─── */
+.columns {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    gap: 0;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule-light);
+}
+.column-rule {
+    background: var(--rule-light);
+    width: 1px;
+}
+.column {
+    padding: 0 24px;
+}
+.column:first-child { padding-left: 0; }
+.column:last-child { padding-right: 0; }
+
+.column h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 12px;
+    color: var(--ink);
+}
+.column p {
+    font-size: 14px;
+    color: var(--ink-light);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    text-align: justify;
+    hyphens: auto;
+}
+.column .dropcap::first-letter {
+    font-family: 'Playfair Display', serif;
+    float: left;
+    font-size: 58px;
+    line-height: 0.8;
+    padding-right: 8px;
+    padding-top: 4px;
+    font-weight: 900;
+    color: var(--ink);
+}
+
+/* ─── TWO COLUMNS ─── */
+.columns-2 {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 0;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule-light);
+}
+
+/* ─── SECTION HEADER ─── */
+.section-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ink-faded);
+    padding: 20px 0 4px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 0;
+}
+
+/* ─── ITEMS LIST ─── */
+.items {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule-light);
+}
+.item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px dotted var(--rule-light);
+    align-items: start;
+}
+.item:last-child { border-bottom: none; }
+.item-icon { font-size: 18px; padding-top: 2px; }
+.item h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+.item p {
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.6;
+}
+
+/* ─── PRINCIPLES ─── */
+.principles {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule-light);
+}
+.principle {
+    padding: 10px 0;
+    border-bottom: 1px dotted var(--rule-light);
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 12px;
+}
+.principle:last-child { border-bottom: none; }
+.principle-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faded);
+    padding-top: 3px;
+}
+.principle strong {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 14px;
+}
+.principle span {
+    font-size: 13px;
+    color: var(--ink-light);
+}
+
+/* ─── LATEST POST ─── */
+.latest {
+    padding: 24px 0;
+}
+.post-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 16px 0;
+    transition: opacity 0.2s;
+}
+.post-link:hover { opacity: 0.7; }
+.post-link .date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--ink-faded);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+.post-link h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+.post-link p {
+    font-size: 14px;
+    color: var(--ink-light);
+    line-height: 1.6;
+}
+
+/* ─── FOOTER ─── */
+footer {
+    border-top: 2px solid var(--rule);
+    padding: 16px 0;
+    max-width: 1100px;
+    margin: 20px auto 0;
+}
+footer .container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1100px;
+    padding: 0 20px;
+}
+footer p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faded);
+    letter-spacing: 0.5px;
+}
+footer a { color: var(--blue); text-decoration: none; }
+
+/* ─── PROSE (blog/about) ─── */
+.prose {
+    font-size: 16px;
+    color: var(--ink-light);
+    line-height: 1.8;
+    max-width: 680px;
+    margin: 0 auto;
+    columns: 2;
+    column-gap: 40px;
+    column-rule: 1px solid var(--rule-light);
+}
+.prose.single-col {
+    columns: 1;
+}
+.prose p { margin-bottom: 16px; text-align: justify; hyphens: auto; }
+.prose strong { color: var(--ink); }
+.prose h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 32px 0 12px;
+    column-span: all;
+}
+.prose a { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+    .columns, .columns-2 {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    .column-rule { display: none; }
+    .column {
+        padding: 16px 0 !important;
+        border-bottom: 1px dotted var(--rule-light);
+    }
+    .column:last-child { border-bottom: none; }
+    .masthead-title { font-size: 48px; }
+    .masthead-top { flex-direction: column; gap: 4px; }
+    .prose { columns: 1; }
+}
