@@ -1,5 +1,6 @@
 boardroom/run-session.js
 boardroom/run-round.js
+boardroom/board-context.md
 boardroom/sessions/*/messages.json
 boardroom/sessions/*/round*.md
 boardroom/sessions/*/*.txt
