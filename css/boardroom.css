@@ -1,0 +1,233 @@
+/* ─── BOARD ROOM ─── */
+
+.agent-roster {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid #999080;
+}
+
+.agent-card {
+    padding: 14px 18px;
+    border-bottom: 1px dotted #c4bfb0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: #3a3a30;
+    border-left: 3px solid transparent;
+}
+.agent-card:nth-child(odd) { border-right: 1px solid #999080; }
+.agent-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+.agent-card .agent-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6a6a58;
+    margin-bottom: 4px;
+}
+.agent-card .agent-model {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: #8a8a78;
+}
+
+/* Agent card border colors */
+.agent-card[data-agent="luvi"] { border-left-color: #c0392b; }
+.agent-card[data-agent="voss"] { border-left-color: #2c3e50; }
+.agent-card[data-agent="kael"] { border-left-color: #27ae60; }
+.agent-card[data-agent="sable"] { border-left-color: #8e44ad; }
+.agent-card[data-agent="wren"] { border-left-color: #d4a017; }
+.agent-card[data-agent="cipher"] { border-left-color: #16a085; }
+
+/* ─── SESSION PAGE ─── */
+
+/* Decision / Outcome box at top */
+.session-outcome {
+    background: #f4f1ea;
+    border: 1px solid #c4bfb0;
+    padding: 20px 24px;
+    margin: 16px 0 24px;
+}
+.session-outcome h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.session-outcome p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: #2a2a22;
+    margin-bottom: 6px;
+}
+.session-outcome p:last-child { margin-bottom: 0; }
+.session-outcome .outcome-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6a6a58;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Round sections */
+.round-section {
+    margin: 20px 0;
+    border: 1px solid #c4bfb0;
+}
+.round-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    background: #f4f1ea;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid #c4bfb0;
+}
+.round-header:hover { background: #eae7df; }
+.round-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+}
+.round-header .round-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: #8a8a78;
+    letter-spacing: 1px;
+}
+.round-toggle {
+    font-size: 14px;
+    color: #6a6a58;
+    transition: transform 0.2s;
+}
+.round-section.collapsed .round-toggle { transform: rotate(-90deg); }
+/* collapsed rounds still show messages, just all messages are collapsed */
+.round-section.collapsed .round-header { border-bottom: none; }
+
+/* Round summary — hidden, rounds always show full messages */
+.round-summary {
+    display: none;
+}
+
+/* Messages within rounds */
+.board-message {
+    padding: 16px 18px 16px 22px;
+    border-bottom: 1px dotted #c4bfb0;
+    border-left: 4px solid #ccc;
+}
+.board-message:last-child { border-bottom: none; }
+
+.board-message-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+.board-message-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a18;
+}
+.board-message-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6a6a58;
+    background: #e8e3d8;
+    padding: 2px 7px;
+}
+.board-message-model {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5px;
+    color: #aaa;
+    letter-spacing: 0.5px;
+}
+
+/* Message content — preview by default, expand on click */
+.board-message-content {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #2a2a22;
+}
+.board-message-content p { margin-bottom: 8px; }
+.board-message-content p:last-child { margin-bottom: 0; }
+.board-message-content strong { color: #1a1a18; }
+.board-message-content em { color: #3a3a30; }
+.board-message-content ul, .board-message-content ol {
+    margin: 6px 0 6px 20px;
+}
+.board-message-content li { margin-bottom: 3px; }
+
+/* Collapsed message */
+.board-message.msg-collapsed .board-message-content {
+    max-height: 4.2em;
+    overflow: hidden;
+    position: relative;
+}
+.board-message.msg-collapsed .board-message-content::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2em;
+    background: linear-gradient(transparent, #fff);
+}
+.msg-expand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #6a6a58;
+    cursor: pointer;
+    padding: 4px 0;
+    display: none;
+}
+.msg-expand:hover { color: #c0392b; }
+.board-message.msg-collapsed .msg-expand { display: block; }
+.board-message:not(.msg-collapsed) .msg-expand { display: none; }
+
+/* Agent border colors */
+.board-message[data-agent="luvi"] { border-left-color: #c0392b; }
+.board-message[data-agent="voss"] { border-left-color: #2c3e50; }
+.board-message[data-agent="kael"] { border-left-color: #27ae60; }
+.board-message[data-agent="sable"] { border-left-color: #8e44ad; }
+.board-message[data-agent="wren"] { border-left-color: #d4a017; }
+.board-message[data-agent="cipher"] { border-left-color: #16a085; }
+
+/* Participants bar */
+.session-participants {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #c4bfb0;
+    flex-wrap: wrap;
+}
+.session-participant {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    color: #4a4a3a;
+    padding-left: 10px;
+    border-left: 3px solid #ccc;
+}
+
+@media (max-width: 700px) {
+    .agent-roster { grid-template-columns: 1fr; }
+    .agent-card:nth-child(odd) { border-right: none; }
+    .board-message { padding-left: 14px; }
+    .round-header { padding: 10px 14px; }
+    .session-participants { gap: 8px; }
+}
