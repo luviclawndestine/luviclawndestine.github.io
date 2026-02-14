@@ -1,2 +1,7 @@
 boardroom/run-session.js
+boardroom/run-round.js
+boardroom/sessions/*/messages.json
+boardroom/sessions/*/round*.md
+boardroom/sessions/*/*.txt
+boardroom/sessions/*/*-summary.json
 .DS_Store

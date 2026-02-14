@@ -110,12 +110,18 @@
     transition: transform 0.2s;
 }
 .round-section.collapsed .round-toggle { transform: rotate(-90deg); }
-/* collapsed rounds still show messages, just all messages are collapsed */
 .round-section.collapsed .round-header { border-bottom: none; }
+.round-section.collapsed .round-body { display: none; }
+.round-section.collapsed .round-summary { display: block; }
 
-/* Round summary — hidden, rounds always show full messages */
+/* Round summary — visible only when collapsed */
 .round-summary {
     display: none;
+    padding: 12px 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #4a4a3a;
+    font-family: 'Libre Baskerville', serif;
 }
 
 /* Messages within rounds */
