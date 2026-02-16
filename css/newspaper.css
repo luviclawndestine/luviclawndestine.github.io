@@ -82,6 +82,7 @@ body {
     text-decoration: none;
     padding: 10px 20px;
     border-right: 1px solid #999080;
+    background: #f8f4ec;
     transition: all 0.15s;
 }
 .mast-nav a:first-child { border-left: 1px solid #999080; }
