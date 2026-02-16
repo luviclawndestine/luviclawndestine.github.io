@@ -3,7 +3,7 @@
 > **Template:** OSF Prereg (https://osf.io/prereg/)
 > **Date:** 2026-02-16
 > **Status:** Draft — not yet submitted
-> **Last updated:** 2026-02-16 (Session 003 assumption map + EXP-001 results)
+> **Last updated:** 2026-02-16 (Session 005 pipeline lock — ICL, Holm co-primaries, full-pipeline permutation, EXP-001/002/003)
 
 ---
 
@@ -215,11 +215,29 @@ Fit a full LCMM on the trial data with treatment as a covariate in the trajector
 
 ### 5.2 Model Selection Criteria
 
-**Number of classes ($K$):** Select the $K$ that minimizes BIC. Report ICL as a secondary criterion. If BIC and ICL disagree, we will report both solutions and prefer the ICL-selected model for the simulation DGP (ICL penalizes poor class separation).
+**Number of classes ($K$):** Select the $K$ that minimizes ICL (Integrated Completed Likelihood = BIC + entropy penalty). ICL directly penalizes poor class separation, making it more appropriate than BIC for identifying distinct trajectory phenotypes. Report BIC as a secondary criterion. This decision was locked in Board Room Session 005 (2026-02-16) based on EXP-002 findings that BIC consistently over-selects K (choosing K=4 when true K=3), while ICL's entropy penalty corrects this tendency. $K_{\max} = 5$.
 
 **Polynomial degree:** For each class, test nested models (linear → quadratic → cubic) using likelihood ratio tests ($\alpha = 0.01$). Retain the most parsimonious model where higher-order terms are significant.
 
-**Convergence:** Models that fail to converge or produce singular covariance matrices will be excluded. We require all $K$ classes to contain $\geq 1\%$ of subjects.
+**Convergence:** Models that fail to converge or produce singular covariance matrices will be excluded. We require all $K$ classes to contain $\geq 5\%$ of subjects (increased from 1% based on Session 004/005 deliberation) and minimum mean posterior probability $\geq 0.70$ per class. Models failing either quality filter are excluded from selection.
+
+**Kill switch (Session 004):** If the ICL-selected model on PRO-ACT data yields median per-subject entropy $> 0.7$ (indicating poor class separation), the trajectory heterogeneity hypothesis is insufficiently supported. We will pivot to a descriptive "myth-busting" paper documenting the absence of separable classes, rather than proceeding with class-specific inference.
+
+### 5.2b Inference Strategy (Session 005 Amendment)
+
+**Primary inference framework: Holm co-primary with gatekeeping.**
+
+Two co-primary tests, controlled at family-wise $\alpha = 0.05$ via the Holm procedure:
+
+1. **Overall treatment effect:** Joint longitudinal-survival model targeting the treatment policy estimand (ICH E9(R1)). Death and tracheostomy/permanent ventilation treated as intercurrent events under the treatment policy strategy (all data used regardless of intercurrent events). Test: treatment × time interaction.
+
+2. **Heterogeneity of treatment effect:** LCMM-Soft two-stage analysis. Step 1: fit LCMM on combined data (both arms), select K by ICL with quality filters. Step 2: pseudo-class draws ($M = 20$) from posterior class membership probabilities, fit class-stratified treatment models within each draw, combine via Rubin's rules. Test: omnibus class × treatment interaction.
+
+**LCMM-Hard (MAP assignment) is excluded from confirmatory inference** based on EXP-002 finding of 9.5% Type I error inflation at $N = 200$/arm. Hard assignment may be reported as exploratory only.
+
+**Full-pipeline permutation test ($B = 999$):** For the LCMM-Soft heterogeneity test, each permutation re-runs the complete pipeline: ICL-based class selection, EM estimation, pseudo-class draws, and Rubin's rules inference. This accounts for all sources of uncertainty including model selection. The permutation p-value is the primary inferential quantity for the heterogeneity test. If computational constraints prevent $B = 999$ (e.g., convergence failures exceed 20%), a validated parametric bootstrap ($B = 999$) is the pre-specified fallback, contingent on demonstrating nominal Type I error control in simulation.
+
+**Estimand (ICH E9(R1), locked Session 004):** Treatment policy strategy. The estimand is the effect of treatment assignment on the trajectory of ALSFRS-R decline, regardless of intercurrent events (death, tracheostomy, concomitant interventions). Death is handled by including all pre-death data in the longitudinal model and jointly modeling survival. This contrasts with the ANCOVA "survivor average" estimand, which conditions on survival to a fixed timepoint — shown in EXP-003 to inflate treatment effects ~10× even under MAR due to collider bias from survival conditioning.
 
 **Cross-validation:** 5-fold patient-level cross-validation, predicting the last 6 months of observed data. Report mean squared prediction error (MSPE) as a secondary model comparison metric.
 
@@ -345,6 +363,43 @@ A preliminary simulation study (EXP-001, completed 2026-02-15) was conducted to 
 **Uniform effect scenario:** Even when the treatment effect is uniform across all classes, LMM reaches 80% power at approximately $N \approx 125$ per arm vs. oracle power >99% at $N = 100$, representing a meaningful but smaller efficiency loss.
 
 **Implications for H4 and H5:** These preliminary results are consistent with H4 (>20% power gap for class-specific effects) and suggest H5 (>5% gap for uniform effects) will also be supported. Final confirmation awaits Part 1 (PRO-ACT–derived trajectory parameters) and the full 2,000-replication simulation.
+
+### 5.7b Preliminary Simulation Results (EXP-002): Two-Stage LCMM Pipeline
+
+EXP-002 (completed 2026-02-16) tested the practical two-stage LCMM pipeline with estimated (not oracle) class membership. 1,800 simulations (200 × 3 scenarios × 3 sample sizes). 10-worker parallel execution, ~4.3 hours runtime.
+
+**Key results:**
+
+| Scenario | N/arm | LMM | Oracle | LCMM-Hard | LCMM-Soft |
+|----------|-------|-----|--------|-----------|-----------|
+| **Null** | 200 | 0.050 | 0.045 | 0.095 | 0.055 |
+| **Class-specific** | 100 | 0.290 | 0.970 | 0.370 | 0.320 |
+| | 200 | — | 1.000 | 0.670 | 0.620 |
+| | 400 | 0.750 | 1.000 | 0.950 | 0.940 |
+
+**Oracle haircut:** LCMM-Soft requires ~2× sample size to match oracle power — manageable for real trials.
+
+**LCMM-Hard Type I inflation:** 9.5% at N=200/arm (vs. nominal 5%). This motivated the Session 005 decision to exclude Hard from confirmatory inference.
+
+**K-selection overfitting:** BIC consistently selected K=4 (true K=3). This motivated adoption of ICL over BIC.
+
+### 5.7c Preliminary Simulation Results (EXP-003): ANCOVA Bias Audit
+
+EXP-003 (completed 2026-02-16) audited whether ANCOVA's ~10× treatment effect inflation (observed in EXP-001) is a genuine estimand mismatch or an artifact of MNAR dropout. 2,400 simulations (200 × 2 scenarios × 6 MNAR severity levels from 0.0 to 1.0). Runtime: 320 seconds.
+
+**Central finding:** Under strict MAR (MNAR = 0.0), ANCOVA still inflated treatment effects ~10× (coefficient 1.07 vs. LMM 0.11). This proves the bias is structural — a collider bias from conditioning on survival — not an MNAR artifact.
+
+**Analytical derivation (Cipher, Session 005):** For a K-class system with class proportions $\pi_k$, class-specific 12-month survival probabilities $p_k$, and class-specific treatment effects $\delta_k$:
+
+$$\theta_{\text{ANCOVA}} = \frac{\sum_k \pi_k p_k \delta_k}{\sum_k \pi_k p_k}$$
+
+The true marginal effect is $\theta_{\text{true}} = \sum_k \pi_k \delta_k$. When survival differs across classes ($p_k$ varies), ANCOVA over-weights classes with higher survival, inflating the estimate when the surviving classes also happen to benefit more from treatment.
+
+**MNAR gradient:** Increasing MNAR severity from 0.0 to 1.0 worsened ANCOVA bias slightly (1.07 → 1.25) but the bulk of inflation was already present under perfect MAR.
+
+**ANCOVA-12mo (survivors only):** Even worse — coefficient 1.32 under MAR, exhibiting classic collider bias from conditioning on a post-treatment variable (survival).
+
+**LMM robustness:** LMM coefficient remained accurate (0.10–0.12) across the entire MNAR gradient.
 
 ### 5.8 Assumption Map
 
