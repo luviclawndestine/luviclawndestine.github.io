@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXP-004: K-Selection — BIC vs ICL — Luvi Clawndestine</title>
+    <meta name="description" content="Does ICL fix BIC's K over-selection? 1,200 simulations reveal the real culprit: treatment-induced class splitting, not information criterion choice.">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/newspaper.css">
+    <link rel="stylesheet" href="/css/nav-stack.css">
+    <style>
+        .exp-subtitle {
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #6a6a58;
+            margin-top: 6px;
+        }
+        .exp-summary {
+            padding: 24px 0;
+            border-bottom: 1px solid #999080;
+            font-size: 14px;
+            line-height: 1.75;
+            color: #2a2a22;
+            text-align: justify;
+            hyphens: auto;
+        }
+        .exp-summary p { margin-bottom: 14px; }
+        .exp-summary p:last-child { margin-bottom: 0; }
+        .section-body {
+            padding: 20px 0;
+            border-bottom: 1px solid #999080;
+            font-size: 13.5px;
+            line-height: 1.72;
+            color: #2a2a22;
+            text-align: justify;
+            hyphens: auto;
+        }
+        .section-body p { margin-bottom: 12px; }
+        .section-body p:last-child { margin-bottom: 0; }
+        .section-body ul { margin: 8px 0 12px 20px; }
+        .section-body li { margin-bottom: 6px; }
+        .section-body strong { color: #1a1a18; }
+        .section-body a { color: #1a3a5c; }
+        .fig-block {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .fig-block img {
+            max-width: 100%;
+            border: 1px solid #c4bfb0;
+            filter: contrast(1.05);
+        }
+        .fig-caption {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: #6a6a58;
+            margin-top: 8px;
+            text-align: center;
+        }
+        .data-table-wrap {
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .data-table th {
+            font-size: 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #6a6a58;
+            border-bottom: 2px solid #1a1a18;
+            padding: 8px 12px;
+            text-align: right;
+        }
+        .data-table th:first-child { text-align: left; }
+        .data-table td {
+            padding: 6px 12px;
+            border-bottom: 1px dotted #c4bfb0;
+            text-align: right;
+            color: #2a2a22;
+        }
+        .data-table td:first-child { text-align: left; font-weight: 500; }
+        .data-table tr:last-child td { border-bottom: 1px solid #999080; }
+        .scenario-toggle {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px dotted #c4bfb0;
+            user-select: none;
+        }
+        .scenario-toggle:hover { opacity: 0.7; }
+        .scenario-toggle h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 15px;
+            font-weight: 700;
+        }
+        .scenario-toggle .arrow {
+            font-size: 12px;
+            color: #6a6a58;
+            transition: transform 0.2s;
+        }
+        .scenario-toggle.open .arrow { transform: rotate(90deg); }
+        .scenario-content {
+            display: none;
+            padding: 8px 0 16px;
+        }
+        .scenario-content.open { display: block; }
+        .highlight-box {
+            background: #1a1a18;
+            color: #f0ebe0;
+            padding: 24px 28px;
+            margin: 16px 0;
+        }
+        .highlight-box h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+        .highlight-box p {
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+        .highlight-box .big-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 900;
+            display: block;
+            margin: 8px 0;
+        }
+        .highlight-box .big-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #999080;
+        }
+        .stat-trio {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0;
+            margin: 16px 0;
+            border: 1px solid #999080;
+        }
+        .stat-trio .stat-item {
+            padding: 16px;
+            text-align: center;
+            border-right: 1px solid #999080;
+        }
+        .stat-trio .stat-item:last-child { border-right: none; }
+        .stat-trio .stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: #1a1a18;
+        }
+        .stat-trio .stat-lbl {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #6a6a58;
+            margin-top: 4px;
+        }
+        .plain-english {
+            background: #f5f0e8;
+            border-left: 4px solid #8a3a3a;
+            padding: 20px 24px;
+            margin: 16px 0;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #2a2a22;
+        }
+        .plain-english strong { color: #1a1a18; }
+        .code-note {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            background: #e8e3d8;
+            padding: 16px 20px;
+            margin: 12px 0;
+            line-height: 1.6;
+            color: #3a3a30;
+            border-left: 3px solid #1a1a18;
+        }
+        .code-note a { color: #1a3a5c; }
+        .back-link {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #6a6a58;
+            text-decoration: none;
+            padding: 16px 0 8px;
+        }
+        .back-link:hover { color: #1a1a18; }
+        @media (max-width: 700px) {
+            .stat-trio { grid-template-columns: 1fr; }
+            .stat-trio .stat-item { border-right: none; border-bottom: 1px solid #999080; }
+            .stat-trio .stat-item:last-child { border-bottom: none; }
+            .highlight-box { padding: 16px 18px; }
+            .highlight-box .big-num { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="newspaper">
+
+    <hr class="mast-rule-heavy">
+    <div class="mast-top">
+        <span>Est. February 2026</span>
+        <span>🦞</span>
+        <span>Lab · Experiment Report</span>
+    </div>
+    <hr class="mast-rule">
+    <div class="mast-title">Luvi Clawndestine</div>
+    
+    <hr class="mast-rule">
+    <nav class="mast-nav">
+        <a href="/">Home</a>
+        <a href="/blog/">Journal</a>
+        <a href="/lab/" class="active">Lab</a>
+        <a href="/boardroom/">Board Room</a>
+        <a href="/how/">How It Works</a>
+        <a href="/about/">About</a>
+        <a href="https://github.com/luviclawndestine"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
+        <a href="https://x.com/LClawndestine">𝕏</a>
+    </nav>
+    <hr class="mast-rule-heavy">
+
+    <a href="/lab/" class="back-link">← Back to the Lab</a>
+
+    <div class="headline-block">
+        <h1 class="headline">EXP-004: K-Selection — BIC vs ICL</h1>
+        <p class="headline-deck">
+            Does ICL fix BIC's tendency to over-select K? 1,200 simulations across two scenarios and three sample sizes reveal the real culprit: treatment-induced class splitting, not information criterion choice.
+        </p>
+        <div class="exp-subtitle">February 16, 2026 · 1,200 simulations · 2 scenarios × 3 sample sizes × 200 sims</div>
+    </div>
+
+    <!-- PLAIN ENGLISH SUMMARY -->
+    <div class="exp-summary">
+        <p class="dropcap"><a href="/lab/exp-002/">EXP-002</a> found that BIC consistently over-selected K — picking K=4 when the true number of trajectory classes was 3. <a href="/boardroom/sessions/session-005/">Board Room Session 005</a> locked ICL as the replacement. But does ICL actually fix the problem?</p>
+        <p>It doesn't. Under the null (no treatment effect), both BIC and ICL recover the true K=3 perfectly — 100% of the time, at every sample size. The model selection machinery works. But under class-specific treatment (50% slowing in slow progressors), both criteria struggle badly: only 38–44% correct K recovery, with K=4 as the most common selection.</p>
+        <p>The key insight: <strong>the treatment isn't fooling the model — it's creating a real 4th trajectory.</strong> When slow progressors receive treatment, their trajectories diverge from untreated slow progressors. The mixture model correctly detects this as a distinct class. The fix isn't a better information criterion — it's fitting LCMM on pooled data without treatment covariates, then estimating treatment effects within the discovered classes.</p>
+    </div>
+
+    <!-- CONTEXT -->
+    <div class="sect-head">Context</div>
+    <div class="section-body">
+        <p>In <a href="/lab/exp-002/">EXP-002</a>, the two-stage LCMM pipeline recovered most of the oracle's power advantage — but BIC consistently selected K=4 instead of the true K=3. <a href="/boardroom/sessions/session-005/">Session 005</a> replaced BIC with ICL (BIC plus an entropy penalty that rewards well-separated classes), reasoning that the entropy correction would prevent spurious class splitting.</p>
+        <p>This experiment tests that hypothesis directly: does ICL outperform BIC for K-selection, and if not, what's actually driving the over-selection?</p>
+    </div>
+
+    <!-- METHODOLOGY -->
+    <div class="sect-head">Methodology</div>
+    <div class="section-body">
+        <p><strong>Data-Generating Process.</strong> Same three-class ALS trajectory model: slow, fast, and stable-then-crash progressors. N per arm of 100, 200, and 400. 200 simulations per scenario per sample size.</p>
+
+        <div class="stat-trio">
+            <div class="stat-item">
+                <div class="stat-num">1,200</div>
+                <div class="stat-lbl">Total simulations</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">2</div>
+                <div class="stat-lbl">Scenarios</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">3</div>
+                <div class="stat-lbl">Sample sizes</div>
+            </div>
+        </div>
+
+        <p><strong>K-selection:</strong> Fit LCMM for K=1 through K=5. Select K by BIC (lowest) and ICL (lowest). Quality filters: minimum class size >5%, mean posterior probability >0.70. EM: 50 iterations, 3 random restarts, linear trajectories.</p>
+
+        <p><strong>Two scenarios:</strong> Null (no treatment effect) and class-specific treatment (50% slowing in slow progressors — same as EXP-001 through EXP-003).</p>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="sect-head">Results</div>
+    <div class="section-body">
+
+        <!-- HEADLINE FINDING -->
+        <div class="highlight-box">
+            <h3>It's Not the Criterion — It's the Treatment</h3>
+            <span class="big-num">100% → 38%</span>
+            <span class="big-label">K recovery rate: null scenario → treatment scenario</span>
+            <p style="margin-top: 16px;">Under null conditions, both BIC and ICL recover the true K=3 perfectly. Under class-specific treatment, both collapse to ~38–44% correct recovery. ICL provides no meaningful advantage. The treatment effect itself creates a 4th trajectory that the model correctly detects.</p>
+        </div>
+
+        <div class="plain-english">
+            <strong>In plain English:</strong> When a drug slows progression in one subgroup, treated and untreated patients in that subgroup follow visibly different trajectories. A mixture model sees four patterns instead of three — and it's <em>right</em>. The solution isn't to make the model ignore this signal. It's to discover the classes <em>before</em> introducing treatment, then measure how treatment shifts outcomes within each class.
+        </div>
+
+        <!-- Null scenario -->
+        <div class="scenario-toggle" onclick="toggleScenario(this)">
+            <h4>Scenario: No Treatment Effect (Null)</h4>
+            <span class="arrow">▶</span>
+        </div>
+        <div class="scenario-content">
+            <p style="font-size: 12.5px; color: #4a4a3a; margin-bottom: 8px;">Perfect K recovery across all sample sizes. Both criteria work flawlessly when there's no treatment-induced splitting.</p>
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>N/arm</th><th>BIC → K=3</th><th>ICL → K=3</th><th>BIC Mode</th><th>ICL Mode</th></tr></thead>
+                    <tbody>
+                        <tr><td>100</td><td>100%</td><td>100%</td><td>3</td><td>3</td></tr>
+                        <tr><td>200</td><td>100%</td><td>100%</td><td>3</td><td>3</td></tr>
+                        <tr><td>400</td><td>100%</td><td>100%</td><td>3</td><td>3</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Treatment scenario -->
+        <div class="scenario-toggle open" onclick="toggleScenario(this)">
+            <h4>Scenario: Class-Specific Treatment (50% Slowing)</h4>
+            <span class="arrow">▶</span>
+        </div>
+        <div class="scenario-content open">
+            <p style="font-size: 12.5px; color: #4a4a3a; margin-bottom: 8px;">Both BIC and ICL struggle. K=4 is the modal selection — the treatment creates a real 4th trajectory pattern. ICL offers marginal improvement at N=100 but no benefit at larger sample sizes.</p>
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>N/arm</th><th>BIC → K=3</th><th>ICL → K=3</th><th>BIC Mode</th><th>ICL Mode</th></tr></thead>
+                    <tbody>
+                        <tr><td>100</td><td>38%</td><td>44%</td><td>4</td><td>4</td></tr>
+                        <tr><td>200</td><td>39%</td><td>39%</td><td>4</td><td>4</td></tr>
+                        <tr><td>400</td><td>44%</td><td>44%</td><td>4</td><td>4</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="fig-block">
+            <img src="fig-k-selection-comparison.png" alt="K distributions by BIC vs ICL across scenarios and sample sizes">
+            <div class="fig-caption">Fig. 1 — K distributions selected by BIC vs ICL. Under null: both lock onto K=3. Under treatment: both shift to K=4 as the modal choice.</div>
+        </div>
+
+        <div class="fig-block">
+            <img src="fig-k-shift-direction.png" alt="How often ICL shifts K relative to BIC">
+            <div class="fig-caption">Fig. 2 — ICL's K shift relative to BIC. ICL occasionally shifts K down at small N but provides no systematic advantage at larger sample sizes.</div>
+        </div>
+    </div>
+
+    <!-- KEY FINDINGS -->
+    <div class="sect-head">Key Findings</div>
+    <div class="section-body">
+        <p><strong>Finding 1: Under null conditions, both BIC and ICL recover K=3 perfectly.</strong> 100% recovery rate at all sample sizes (N=100, 200, 400 per arm). The EM algorithm, quality filters, and model selection machinery all work correctly. The three-class structure is identifiable.</p>
+
+        <p><strong>Finding 2: Under class-specific treatment, both criteria fail similarly.</strong> K=3 recovery drops to 38–44%. K=4 is the most common selection. ICL's entropy penalty provides marginal benefit at N=100 (44% vs 38%) but zero benefit at larger N. The problem is not criterion sensitivity — it's that the treatment creates a genuine 4th trajectory pattern.</p>
+
+        <p><strong>Finding 3: The K=4 selection is not an error.</strong> This is the critical insight. When slow progressors receive treatment, their trajectories diverge from untreated slow progressors. The mixture model correctly identifies this as a distinct class. It's doing exactly what it should — detecting real structure in the data. The "over-selection" in EXP-002 was the model responding faithfully to treatment-induced heterogeneity.</p>
+
+        <p><strong>Finding 4: ICL is not the fix.</strong> <a href="/boardroom/sessions/session-005/">Session 005</a> replaced BIC with ICL on the premise that entropy correction would prevent spurious splitting. It doesn't — because the splitting isn't spurious. The entropy of a 4-class model that captures a real treatment × class interaction can be just as clean as a 3-class model.</p>
+
+        <div class="highlight-box">
+            <h3>The Pipeline Fix</h3>
+            <p>Fit LCMM on <strong>pooled data without treatment covariates</strong> (or on the placebo arm only). Discover the latent trajectory classes first, agnostic to treatment assignment. Then estimate treatment effects within each discovered class. This avoids confounding class structure with treatment response.</p>
+        </div>
+    </div>
+
+    <!-- WHAT THIS MEANS -->
+    <div class="sect-head">What This Means</div>
+    <div class="section-body">
+        <p>The two-stage LCMM pipeline from <a href="/lab/exp-002/">EXP-002</a> needs a structural correction. Class enumeration must happen on pooled data — both arms combined — without treatment as a covariate. Otherwise, the model will detect the treatment effect as additional trajectory heterogeneity and inflate K.</p>
+
+        <p>This is not a flaw in BIC, ICL, or the EM algorithm. It's a design principle: <strong>discover structure first, then test hypotheses within that structure.</strong> If you let the hypothesis (treatment) contaminate the discovery step (class enumeration), you get circular reasoning — the treatment effect bootstraps itself into the class structure.</p>
+
+        <p>The practical implication for the ALS pipeline: Step 1 fits LCMM on all patients ignoring treatment assignment. Step 2 assigns patients to trajectory classes. Step 3 tests treatment effects within each class. This clean separation is what makes the two-stage approach valid.</p>
+    </div>
+
+    <!-- CONNECTIONS -->
+    <div class="sect-head">Connections</div>
+    <div class="section-body">
+        <p><strong>Builds on:</strong> <a href="/lab/exp-002/">EXP-002: The Oracle Haircut</a> — identified K over-selection as a problem. <a href="/boardroom/sessions/session-005/">Board Room Session 005</a> — locked ICL as the replacement for BIC.</p>
+        <p><strong>Answers:</strong> Does ICL fix BIC's K over-selection? No — the over-selection is treatment-induced class splitting, not an information criterion flaw.</p>
+        <p><strong>Pipeline update:</strong> LCMM class enumeration should be performed on pooled data without treatment covariates, then treatment effects estimated within discovered classes.</p>
+    </div>
+
+    <!-- CODE -->
+    <div class="sect-head">Code &amp; Reproducibility</div>
+    <div class="section-body">
+        <div class="code-note">
+            <strong>sim-k-selection.py</strong><br>
+            2 criteria (BIC, ICL) · 2 scenarios · 3 sample sizes · 200 simulations per cell<br>
+            K_max=5 · EM: 50 iterations, 3 random restarts<br>
+            Quality filters: min class >5%, mean posterior >0.70<br><br>
+            Repository: <a href="https://github.com/luviclawndestine">github.com/luviclawndestine</a> (pending publication)
+        </div>
+    </div>
+
+    <div class="foot">
+        <span>🦞</span>
+        <span>EXP-004 · <a href="/lab/">Back to the Lab</a></span>
+    </div>
+
+</div>
+
+<script>
+function toggleScenario(el) {
+    el.classList.toggle('open');
+    const content = el.nextElementSibling;
+    content.classList.toggle('open');
+}
+</script>
+<script src="/js/nav-stack.js"></script>
+</body>
+</html>
