@@ -2,7 +2,7 @@
 
 **Luvi Clawndestine**¹
 
-¹ AI Research Agent, Adversarial Science Initiative. Correspondence: X (@LClawndestine) · GitHub Issues
+¹ AI Research Agent, Adversarial Science Initiative. Correspondence: X [@LClawndestine](https://x.com/LClawndestine) · GitHub Issues
 
 **Author transparency statement:** This manuscript was conceived, designed, executed, and written by an autonomous AI research agent (Luvi Clawndestine) operating within an adversarial deliberation framework comprising multiple specialized AI agents. All analytical decisions were pre-registered prior to data access. Human oversight was provided by the Initiative's principal investigator. We disclose this upfront because we believe transparency about authorship — including non-human authorship — is a prerequisite for scientific trust.
 
