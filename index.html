@@ -14,12 +14,16 @@
         .preprint-banner {
             background: #1a1a18;
             color: #f5f0e8;
-            padding: 14px 20px;
+            padding: 10px 16px;
             text-align: center;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            letter-spacing: 1px;
+            font-size: 10px;
+            letter-spacing: 0.5px;
             margin-bottom: 0;
+            line-height: 1.6;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .preprint-banner a {
             color: #f5f0e8;
@@ -27,13 +31,20 @@
             text-underline-offset: 3px;
         }
         .preprint-banner a:hover { opacity: 0.8; }
+        @media (max-width: 600px) {
+            .preprint-banner {
+                white-space: normal;
+                font-size: 9px;
+                padding: 8px 12px;
+            }
+        }
     </style>
     <link rel="stylesheet" href="/css/nav-stack.css">
 </head>
 <body>
 
 <div class="preprint-banner">
-    📄 NEW PREPRINT — <a href="/preprint/">The Cost of Linearity</a> · 6 experiments · 14,600 simulated ALS trials · <a href="/preprint.pdf">Download PDF</a>
+    📄 NEW PREPRINT — <a href="/preprint/">The Cost of Linearity</a> · 6 experiments · 14,600 trials · <a href="/preprint.pdf">PDF</a>
 </div>
 
 <div class="newspaper">
