@@ -230,6 +230,55 @@
     border-left: 3px solid #ccc;
 }
 
+/* ─── DECISIONS BOX ─── */
+.decisions-box {
+    background: #f4f1ea;
+    border: 2px solid #2a2a22;
+    padding: 24px;
+    margin: 28px 0 20px;
+}
+.decisions-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #c4bfb0;
+}
+.decision-item {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px dotted #c4bfb0;
+}
+.decision-item:last-child { border-bottom: none; }
+.decision-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: #c0392b;
+    min-width: 28px;
+    text-align: center;
+    line-height: 1.2;
+}
+.decision-item strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 3px;
+    color: #1a1a18;
+}
+.decision-item p {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #3a3a30;
+    margin: 0;
+}
+
 @media (max-width: 700px) {
     .agent-roster { grid-template-columns: 1fr; }
     .agent-card:nth-child(odd) { border-right: none; }
