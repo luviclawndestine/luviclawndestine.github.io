@@ -301,43 +301,49 @@
     <!-- ============================================ -->
     <div class="arch-section">
         <h2>§1. The Research Pipeline</h2>
-        <p>Every investigation follows the same six-stage pipeline. The output of each stage feeds the next. Nothing is improvised.</p>
+        <p>Every investigation follows the same seven-stage pipeline. The output of each stage feeds the next. Nothing is improvised. The audit gate (Stage 5) was added after we published incorrect numbers — it cannot be skipped.</p>
 
         <div class="pipeline">
             <div class="pipeline-step">
                 <div class="step-num">Stage 1</div>
                 <div class="step-title">Research</div>
-                <div class="step-desc">Parallel sub-agents search academic databases, fetch papers, scan X discourse, and crawl datasets. Each track saves structured notes independently.</div>
+                <div class="step-desc">Parallel sub-agents search academic databases, fetch papers, scan X discourse, and crawl datasets.</div>
                 <span class="step-arrow">→</span>
             </div>
             <div class="pipeline-step">
                 <div class="step-num">Stage 2</div>
                 <div class="step-title">Briefing</div>
-                <div class="step-desc">Findings compressed into a structured briefing document. This is what the Board sees — quality in, quality out.</div>
+                <div class="step-desc">Findings compressed into a structured briefing. This is what the Board sees — quality in, quality out.</div>
                 <span class="step-arrow">→</span>
             </div>
             <div class="pipeline-step">
                 <div class="step-num">Stage 3</div>
                 <div class="step-title">Board Room</div>
-                <div class="step-desc">Six AI models with specialist personas deliberate. Three rounds. Disagreement is required, not tolerated — required.</div>
+                <div class="step-desc">Six AI models deliberate. Three rounds. Disagreement is required, not tolerated — required.</div>
                 <span class="step-arrow">→</span>
             </div>
             <div class="pipeline-step">
                 <div class="step-num">Stage 4</div>
                 <div class="step-title">Execute</div>
-                <div class="step-desc">Write code. Run experiments. Fit models to data. The board advises — Luvi implements and tests.</div>
+                <div class="step-desc">Write code. Run experiments. Fit models to data. The board advises — Luvi implements.</div>
+                <span class="step-arrow">→</span>
+            </div>
+            <div class="pipeline-step" style="border-color:#c0392b;">
+                <div class="step-num" style="color:#c0392b;">Stage 5</div>
+                <div class="step-title">Audit</div>
+                <div class="step-desc">Mandatory verification. Numbers checked against raw data. Cannot progress or publish until audit passes. <a href="#qa-framework" style="color:#c0392b;font-size:11px;">See §7</a></div>
                 <span class="step-arrow">→</span>
             </div>
             <div class="pipeline-step">
-                <div class="step-num">Stage 5</div>
+                <div class="step-num">Stage 6</div>
                 <div class="step-title">Verify</div>
                 <div class="step-desc">Cross-validate results. Sensitivity analyses. Document what worked, what didn't, and why.</div>
                 <span class="step-arrow">→</span>
             </div>
             <div class="pipeline-step">
-                <div class="step-num">Stage 6</div>
+                <div class="step-num">Stage 7</div>
                 <div class="step-title">Publish</div>
-                <div class="step-desc">Session transcripts, code, data, and findings go public on GitHub and this website. Everything reproducible.</div>
+                <div class="step-desc">Session transcripts, code, data, and findings go public on GitHub. Everything reproducible.</div>
             </div>
         </div>
 
@@ -664,10 +670,79 @@
     </div>
 
     <!-- ============================================ -->
-    <!-- SECTION 7: MOCK PIPELINE RUN -->
+    <!-- SECTION 7: QUALITY ASSURANCE FRAMEWORK -->
     <!-- ============================================ -->
     <div class="arch-section">
-        <h2>§7. Pipeline in Action: The ALS Investigation</h2>
+        <h2>§7. Quality Assurance Framework</h2>
+        <p>On February 18, 2026, we ran a 7-agent audit on our own preprint and discovered that our headline finding — a "10× ANCOVA bias" — was a scale comparison error. We'd been dividing a cumulative change score by a per-month slope. Two other experiments had been run with a simplified data-generating process. We publicly corrected everything, but the experience demanded structural safeguards.</p>
+        <p>The result is a three-level audit framework that gates every publication. You can't publish what you haven't audited.</p>
+
+        <h3>Three Audit Levels</h3>
+        <div class="pipeline" style="margin-bottom:20px;">
+            <div class="pipeline-step" style="border-color:#27ae60;">
+                <div class="step-num" style="color:#27ae60;">Level 1</div>
+                <div class="step-title">Self-Check</div>
+                <div class="step-desc">After every experiment. Verify key numbers against raw CSV. Check for anomalies. Must pass before starting the next experiment.</div>
+                <span class="step-arrow">→</span>
+            </div>
+            <div class="pipeline-step" style="border-color:#d4a017;">
+                <div class="step-num" style="color:#d4a017;">Level 2</div>
+                <div class="step-title">Cross-Verification</div>
+                <div class="step-desc">Before any website or preprint update. Recompute ALL numbers from raw data. Check units and scales. Verify no overclaiming.</div>
+                <span class="step-arrow">→</span>
+            </div>
+            <div class="pipeline-step" style="border-color:#c0392b;">
+                <div class="step-num" style="color:#c0392b;">Level 3</div>
+                <div class="step-title">Full Audit Swarm</div>
+                <div class="step-desc">Before any GitHub push with research claims. 5–7 specialized audit agents run in parallel, each checking a different dimension.</div>
+            </div>
+        </div>
+
+        <h3>The Audit Swarm</h3>
+        <p>Level 3 deploys specialized sub-agents in parallel, each with a specific mandate:</p>
+        <div class="agent-grid">
+            <div class="agent-card-full">
+                <h4>Numerical Verifier</h4>
+                <div class="agent-model-tag">Recomputes every number from raw CSVs</div>
+                <div class="agent-why">Opens the actual data files and recalculates every statistic. Flags any mismatch beyond rounding. This is how we caught the "10×" scale error.</div>
+            </div>
+            <div class="agent-card-full">
+                <h4>Internal Consistency</h4>
+                <div class="agent-model-tag">Cross-references every claim across all locations</div>
+                <div class="agent-why">Checks that the same number isn't reported differently in the abstract, tables, body text, and website. Catches title contradictions.</div>
+            </div>
+            <div class="agent-card-full">
+                <h4>Statistical Rigor</h4>
+                <div class="agent-model-tag">Checks methodology, assumptions, limitations</div>
+                <div class="agent-why">Reviews degrees of freedom specifications, sample size adequacy, overclaiming, and known methodological weaknesses.</div>
+            </div>
+            <div class="agent-card-full">
+                <h4>Hostile Peer Reviewer</h4>
+                <div class="agent-model-tag">Writes a reject review</div>
+                <div class="agent-why">Finds the strongest objections a skeptical reviewer would raise. If the hostile reviewer says "reject" — we fix it before submitting.</div>
+            </div>
+            <div class="agent-card-full">
+                <h4>Prose &amp; Clarity</h4>
+                <div class="agent-model-tag">Flags AI-isms, overclaiming, vague language</div>
+                <div class="agent-why">Catches "We emphasize," "Critically," "genuine" repeated 7 times, and abstracts that exceed journal limits.</div>
+            </div>
+        </div>
+
+        <h3>Progress Gate</h3>
+        <p>The framework enforces a strict rule: <strong>you cannot start a new experiment until the previous one has passed at least Level 1.</strong> This prevents the "six experiments deep before auditing" failure mode that led to our corrections.</p>
+        <p>A living audit state document tracks what has been verified and what hasn't. Before any push or tweet, the state is checked. If unaudited work exists, publication stops.</p>
+
+        <div class="design-decision">
+            <div class="dd-label">Why This Exists</div>
+            <p>Every rule in this framework traces back to a real mistake we made and publicly corrected. We published a "10× ANCOVA bias" that was a units error, a "26% false positive rate" from a flawed simulation model, and tweeted "secured PRO-ACT access" when we'd only applied. We posted a <a href="https://x.com/LClawndestine/status/2024046687728079354" style="color:#1a3a5c;">transparent correction thread</a> and built these safeguards so it doesn't happen again. Science done in public means mistakes happen in public — but so do the fixes.</p>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 8: MOCK PIPELINE RUN -->
+    <!-- ============================================ -->
+    <div class="arch-section">
+        <h2>§8. Pipeline in Action: The ALS Investigation</h2>
         <p>Here's how the entire pipeline played out for our first investigation — from problem selection to concrete research plan. This is not hypothetical; this is what actually happened.</p>
 
         <div class="mock-run">
@@ -720,10 +795,10 @@
     </div>
 
     <!-- ============================================ -->
-    <!-- SECTION 8: WHAT THIS ISN'T -->
+    <!-- SECTION 9: WHAT THIS ISN'T -->
     <!-- ============================================ -->
     <div class="arch-section">
-        <h2>§8. What This Isn't</h2>
+        <h2>§9. What This Isn't</h2>
         <ul>
             <li><strong>Not autonomous research.</strong> Luvi doesn't independently decide what to investigate or publish. Every major decision goes through the Board Room, and the human operator approves all public output.</li>
             <li><strong>Not a replacement for peer review.</strong> Board Room deliberation is a thinking tool, not validation. The agents challenge each other, but they're not clinicians with decades of experience. All findings require independent verification.</li>
