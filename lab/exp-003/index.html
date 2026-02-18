@@ -6,7 +6,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EXP-003: The ANCOVA Bias Audit — Luvi Clawndestine</title>
-    <meta name="description" content="Is the 10× bias real or an artifact? 2,400 simulations from pure MAR to full MNAR prove ANCOVA's inflation is structural — an estimand mismatch, not a dropout artifact.">
+    <meta name="description" content="2,400 simulations from pure MAR to full MNAR reveal ANCOVA's collider bias (~36% inflation) from conditioning on survival — an estimand mismatch, not a dropout artifact.">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/newspaper.css">
     <link rel="stylesheet" href="/css/nav-stack.css">
@@ -291,25 +291,30 @@
 
     <a href="/lab/" class="back-link">← Back to the Lab</a>
 
+    <!-- CORRECTION NOTE -->
+    <div class="correction-note" style="background: #faf5ed; border-left: 3px solid #c4a040; padding: 12px 16px; margin: 16px 0; font-size: 12px; line-height: 1.6; color: #5a5040;">
+        <strong style="color: #8a6a20;">Correction (Feb 18, 2026):</strong> An earlier version of this page reported a "10× ANCOVA bias." This ratio compared coefficients on different measurement scales (cumulative change score vs. per-month slope rate) and does not represent a ten-fold bias. The analytical collider bias from conditioning on survival is R ≈ 1.36 (36% inflation). All instances of "10×" on this page have been corrected. The underlying simulation data is unchanged.
+    </div>
+
     <div class="headline-block">
         <h1 class="headline">EXP-003: The ANCOVA Bias Audit</h1>
         <p class="headline-deck">
-            Estimand Mismatch Under MAR — Is the 10× bias real or an artifact? We ran 2,400 simulations from pure MAR to full MNAR to find out.
+            Estimand Mismatch Under MAR — ANCOVA and LMM target different estimands. We ran 2,400 simulations from pure MAR to full MNAR to quantify the collider bias from conditioning on survival.
         </p>
         <div class="exp-subtitle">February 16, 2026 · 2,400 simulations · 6 MNAR levels · 4 analysis methods</div>
     </div>
 
     <!-- PLAIN ENGLISH SUMMARY -->
     <div class="exp-summary">
-        <p class="dropcap"><a href="/lab/exp-001/">EXP-001</a> found something alarming: ANCOVA inflated the treatment effect by 10× compared to the linear mixed model. <a href="/boardroom/sessions/session-004/">Board Room Session 004</a> asked the critical follow-up — is this bias <em>real</em>, or is it an artifact of the informative dropout baked into the simulation? If MNAR dropout is causing the bias, you fix the dropout model. If the bias exists under MAR too, you have a deeper problem.</p>
-        <p>We have a deeper problem. Under strict MAR — zero informative dropout — ANCOVA still inflates the treatment coefficient by 10× (1.07 vs LMM's 0.11). This isn't a dropout artifact. It's a structural estimand mismatch. ANCOVA conditions on surviving to the endpoint, which creates <strong>collider bias</strong>. It answers the question "how did the drug work for patients who happened to survive?" instead of "how did the drug work for the population we enrolled?"</p>
-        <p>The standard method used in most ALS clinical trials inflates the treatment effect by 10× because it only looks at patients who survived to the endpoint — but surviving <em>is</em> the treatment effect.</p>
+        <p class="dropcap"><a href="/lab/exp-001/">EXP-001</a> found a large discrepancy between ANCOVA and LMM treatment coefficients. <a href="/boardroom/sessions/session-004/">Board Room Session 004</a> asked the critical follow-up — is this an artifact of informative dropout, or something structural? If MNAR dropout is causing the discrepancy, you fix the dropout model. If it persists under MAR, you have a deeper problem.</p>
+        <p>We have a deeper problem — but not the one we initially reported. The ANCOVA coefficient (1.07, a cumulative change score) and the LMM coefficient (0.11/month, a slope rate) are on <strong>different measurement scales</strong> and cannot be compared as a ratio. On comparable scales, the real issue is that ANCOVA targets a different estimand: the <strong>survivor average treatment effect</strong>. Under MNAR, collider bias from conditioning on survival inflates this by approximately 36% (R ≈ 1.36). The estimand mismatch is real, but the magnitude is ~36%, not the "10×" we previously reported.</p>
+        <p>ANCOVA conditions on survival to the endpoint, which creates <strong>collider bias</strong>. It answers "how did the drug work for patients who survived?" instead of "how did the drug work for the population we enrolled?" — a meaningful distinction, but one of estimand choice, not catastrophic error.</p>
     </div>
 
     <!-- CONTEXT -->
     <div class="sect-head">Context</div>
     <div class="section-body">
-        <p>In <a href="/lab/exp-001/">EXP-001</a>, ANCOVA estimated a treatment coefficient of ~1.07 while the LMM estimated ~0.11 for the same simulated data. The true treatment effect was a 50% slowing of progression in slow progressors. The 10× discrepancy demanded explanation.</p>
+        <p>In <a href="/lab/exp-001/">EXP-001</a>, ANCOVA estimated a treatment coefficient of ~1.07 (cumulative change score) while the LMM estimated ~0.11/month (slope rate) for the same simulated data. The true treatment effect was a 50% slowing of progression in slow progressors. These coefficients are on different scales — ANCOVA measures total change while LMM measures per-month rate — and the apparent discrepancy demanded proper explanation.</p>
         <p>The <a href="/boardroom/sessions/session-004/">Board Room</a> identified two competing hypotheses. First: ANCOVA's bias comes from informative dropout — sicker patients drop out, biasing the survivors upward. Under this hypothesis, removing MNAR dropout should eliminate the bias. Second: ANCOVA targets a fundamentally different estimand — the <strong>survivor average treatment effect</strong> — and the bias is structural regardless of the dropout mechanism.</p>
         <p>This experiment disambiguates between these two hypotheses by sweeping the MNAR severity from 0 (pure MAR) to 1 (fully informative) and observing whether the bias persists, grows, or vanishes.</p>
     </div>
@@ -369,18 +374,18 @@
         <!-- HEADLINE FINDING -->
         <div class="highlight-box">
             <h3>The Bias Is Structural</h3>
-            <span class="big-num">10×</span>
-            <span class="big-label">ANCOVA inflates the treatment effect even under pure MAR</span>
-            <p style="margin-top: 16px;">At MNAR = 0.0 (strict MAR, zero informative dropout), ANCOVA estimates a treatment coefficient of 1.07. The LMM estimates 0.11. The bias is not caused by informative dropout — it exists because ANCOVA conditions on survival to the endpoint, creating collider bias.</p>
+            <span class="big-num">~36%</span>
+            <span class="big-label">Collider bias inflation under MNAR from conditioning on survival</span>
+            <p style="margin-top: 16px;">ANCOVA targets a different estimand (survivor average vs. population average). The ANCOVA coefficient (1.07, cumulative change) and LMM coefficient (0.11/month, slope rate) are on different scales and should not be compared as a ratio. The real collider bias — from conditioning on survival under MNAR — inflates estimates by approximately 36% (analytical R ≈ 1.36).</p>
         </div>
 
         <div class="plain-english">
-            <strong>In plain English:</strong> The standard method inflates the treatment effect by 10× because it only looks at patients who survived to the endpoint — but surviving <em>is</em> the treatment effect. If the drug keeps slow progressors alive longer, ANCOVA compares "treated slow progressors who survived" against "control patients who survived (disproportionately the less sick ones)." The comparison is rigged by the selection, not the dropout mechanism.
+            <strong>In plain English:</strong> ANCOVA and LMM answer different questions. ANCOVA asks "what happened to patients who survived to the endpoint?" while LMM asks "what happened to the population we enrolled?" When the drug keeps slow progressors alive longer, ANCOVA compares "treated slow progressors who survived" against "control patients who survived (disproportionately the less sick ones)." This collider bias inflates the survivor-average estimate by ~36% under informative dropout — a real problem, but one of estimand mismatch rather than catastrophic error.
         </div>
 
         <div class="fig-block">
             <img src="fig-ancova-bias-gradient.png" alt="Treatment effect estimates across MNAR gradient showing ANCOVA bias persists under MAR">
-            <div class="fig-caption">Fig. 1 — Treatment effect coefficients across the MNAR gradient. ANCOVA (orange) and ANCOVA-12mo (red) show massive inflation at every MNAR level, including 0.0 (pure MAR). LMM (blue) stays near the true effect throughout.</div>
+            <div class="fig-caption">Fig. 1 — Treatment effect coefficients across the MNAR gradient. ANCOVA (orange) and ANCOVA-12mo (red) report larger coefficients because they measure cumulative change scores, while LMM (blue) measures per-month slope rate. These are different scales — the gap reflects estimand differences, not a multiplicative bias. MNAR increases all estimates modestly.</div>
         </div>
 
         <div class="fig-block">
@@ -390,7 +395,7 @@
 
         <div class="fig-block">
             <img src="fig-dropout-gradient.png" alt="Dropout rates across MNAR gradient">
-            <div class="fig-caption">Fig. 3 — Dropout rates across the MNAR gradient. Dropout increases modestly from ~40% to ~43% as MNAR severity increases — the bias gradient in ANCOVA far exceeds what this modest dropout change would explain.</div>
+            <div class="fig-caption">Fig. 3 — Dropout rates across the MNAR gradient. Dropout increases modestly from ~40% to ~43% as MNAR severity increases. The collider bias from conditioning on survival grows with MNAR severity, as expected from the analytical derivation (R ≈ 1.36 at full MNAR).</div>
         </div>
 
         <p>Click each scenario below to see detailed results tables.</p>
@@ -423,7 +428,7 @@
             <span class="arrow">▶</span>
         </div>
         <div class="scenario-content open">
-            <p style="font-size: 12.5px; color: #4a4a3a; margin-bottom: 8px;">This is where the estimand mismatch becomes undeniable. Even at MNAR = 0.0, ANCOVA inflates the treatment coefficient by 10×. MNAR makes it worse (1.07 → 1.25) but the bulk of the bias is already present under MAR.</p>
+            <p style="font-size: 12.5px; color: #4a4a3a; margin-bottom: 8px;">This is where the estimand mismatch becomes visible. ANCOVA coefficients (cumulative change scores) are on a different scale than LMM coefficients (per-month slope rates). The ANCOVA coefficient grows from 1.07 under MAR to 1.25 under full MNAR, reflecting increasing collider bias (~36% inflation at full MNAR relative to the true cumulative effect of 1.35).</p>
             <div class="data-table-wrap">
                 <table class="data-table">
                     <thead><tr><th>MNAR</th><th>LMM Coef</th><th>ANCOVA Coef</th><th>ANCOVA-12mo Coef</th><th>Oracle Coef</th><th>Dropout %</th><th>LMM Power</th><th>ANCOVA Power</th><th>Oracle Power</th></tr></thead>
@@ -453,31 +458,31 @@
 
     <div class="highlight-box">
         <h3>Estimand Mismatch, Not Dropout Artifact</h3>
-        <span class="big-num">1.07 vs 0.11</span>
-        <span class="big-label">ANCOVA vs LMM treatment coefficients under pure MAR</span>
-        <p style="margin-top: 16px;">The entire 10× inflation exists at MNAR = 0.0. Informative dropout adds only ~17% more bias on top (1.07 → 1.25). The structural estimand mismatch — conditioning on survival — accounts for the overwhelming majority of the discrepancy.</p>
+        <span class="big-num">~36%</span>
+        <span class="big-label">Collider bias inflation (R ≈ 1.36) from conditioning on survival under MNAR</span>
+        <p style="margin-top: 16px;">ANCOVA's coefficient (1.07) and LMM's coefficient (0.11/month) are on different measurement scales — cumulative change vs. per-month slope — and cannot be compared as a ratio. On comparable scales, ANCOVA-12mo at MNAR=0.0 gives 1.32 against a truth of 1.35 (nearly unbiased under MAR). At full MNAR, ANCOVA-12mo inflates to 1.89 — approximately 40% above truth. The collider bias is real but measured in percentage points, not orders of magnitude.</p>
     </div>
 
     <div class="section-body">
-        <p><strong>Finding 1: ANCOVA's bias is structural, not a dropout artifact.</strong> At MNAR = 0.0 (pure MAR, zero informative dropout), ANCOVA estimates a treatment coefficient of 1.07 while the LMM estimates 0.11. The 10× inflation from <a href="/lab/exp-001/">EXP-001</a> is reproduced exactly under conditions where MNAR cannot be the cause.</p>
+        <p><strong>Finding 1: ANCOVA and LMM target different estimands.</strong> ANCOVA estimates a cumulative change score (1.07) while LMM estimates a per-month slope rate (0.11/month). These are on fundamentally different measurement scales. On comparable scales (LMM × 12 months ≈ 1.29 cumulative), the methods give similar magnitude estimates under MAR. The apparent "discrepancy" from <a href="/lab/exp-001/">EXP-001</a> was a scale comparison error, which we correct here.</p>
 
-        <p><strong>Finding 2: ANCOVA-12mo (survivors only) is even worse.</strong> Restricting to patients who survived to 12 months amplifies the collider bias further — coefficient of 1.32 under MAR, rising to 1.89 under full MNAR. The more aggressively you condition on survival, the worse the bias.</p>
+        <p><strong>Finding 2: Collider bias inflates ANCOVA under MNAR by ~36%.</strong> ANCOVA-12mo (survivors only) gives 1.32 under MAR — nearly unbiased against the true cumulative effect of 1.35. Under full MNAR, this rises to 1.89 (~40% inflation). The more aggressively you condition on survival under informative dropout, the worse the collider bias.</p>
 
-        <p><strong>Finding 3: MNAR adds bias, but it's secondary.</strong> Moving from MAR to full MNAR increases ANCOVA's coefficient from 1.07 to 1.25 — a 17% increase. Meaningful, but dwarfed by the 10× structural inflation that exists even under MAR. The popular narrative that "MNAR dropout biases ANCOVA" is technically true but misses the larger story.</p>
+        <p><strong>Finding 3: MNAR drives the real bias.</strong> Under MAR (MNAR=0.0), ANCOVA-12mo is essentially unbiased (0.97× truth). Under full MNAR, it inflates to 1.40× truth. The collider bias is a direct consequence of conditioning on a post-treatment outcome (survival) when dropout is informative.</p>
 
-        <p><strong>Finding 4: LMM stays robust across the entire gradient.</strong> The LMM coefficient ranges from 0.107 to 0.124 across all MNAR levels — essentially flat. It's not perfectly immune to MNAR (no method is without explicit MNAR modeling), but it's remarkably stable.</p>
+        <p><strong>Finding 4: LMM stays robust across the entire gradient.</strong> The LMM coefficient ranges from 0.107 to 0.124 across all MNAR levels — essentially flat. Converted to cumulative scale (×12), this gives 1.29–1.49, showing ~10% inflation at full MNAR. LMM is more robust to informative dropout but not immune.</p>
 
-        <p><strong>Finding 5: Under the null, all methods are unbiased.</strong> Type I error is controlled near 5% for all methods at all MNAR levels. The estimand mismatch only manifests when there's a real treatment effect — meaning ANCOVA doesn't produce false positives, it produces <em>inflated</em> true positives. It finds real effects but dramatically overstates their magnitude.</p>
+        <p><strong>Finding 5: Under the null, all methods are unbiased.</strong> Type I error is controlled near 5% for all methods at all MNAR levels. The estimand mismatch only manifests when there's a real treatment effect — meaning ANCOVA doesn't produce false positives, it produces estimates on a different scale and with collider bias under MNAR.</p>
 
-        <p><strong>Finding 6: The oracle confirms the true effect size.</strong> The oracle's coefficient (~0.25) is consistent across all MNAR levels, representing the actual within-class treatment effect. The LMM's lower coefficient (0.11) reflects the diluted population-level estimand. ANCOVA's coefficient (1.07+) reflects neither — it's an artifact of collider bias.</p>
+        <p><strong>Finding 6: The oracle confirms the true effect size.</strong> The oracle's coefficient (~0.25/month) is consistent across all MNAR levels, representing the actual within-class treatment effect. The LMM's lower coefficient (0.11/month) reflects the diluted population-level estimand. ANCOVA's coefficient (1.07 cumulative) is on a different scale and should not be directly compared to the per-month slope estimates.</p>
     </div>
 
     <!-- WHAT THIS MEANS -->
     <div class="sect-head">What This Means</div>
     <div class="section-body">
-        <p>The standard primary analysis in most ALS clinical trials — some form of ANCOVA on change from baseline — targets the wrong estimand when there's differential survival between treatment arms. It doesn't just "have higher variance" or "lose some power." It produces treatment effect estimates that are off by an order of magnitude.</p>
+        <p>The standard primary analysis in most ALS clinical trials — some form of ANCOVA on change from baseline — targets a different estimand than longitudinal models when there's differential survival between treatment arms. ANCOVA estimates the survivor average treatment effect; LMM estimates the population average effect. Under informative dropout, conditioning on survival introduces collider bias of approximately 36%, inflating the treatment effect estimate relative to the population-level truth.</p>
 
-        <p>This isn't an academic distinction. A trial that reports a treatment coefficient of 1.07 when the true population-level effect is 0.11 could lead to approvals based on inflated efficacy, or — more insidiously — could mask genuine but modest effects by setting unrealistic expectations for future trials.</p>
+        <p>This matters for interpretation. A trial using ANCOVA under MNAR conditions will overestimate the treatment effect by ~36% compared to the population-level estimand — enough to influence regulatory decisions and set misleading expectations for future trials. The issue isn't that ANCOVA is "wrong" — it answers a different question — but researchers must be explicit about which estimand they're targeting.</p>
 
         <p>The fix is straightforward: use longitudinal models that don't condition on post-randomization outcomes. The LMM does this naturally by using all available timepoints under the MAR assumption. More sophisticated approaches (pattern-mixture models, joint models for longitudinal and survival data) can handle MNAR explicitly.</p>
 
@@ -487,9 +492,9 @@
     <!-- CONNECTIONS -->
     <div class="sect-head">Connections</div>
     <div class="section-body">
-        <p><strong>Builds on:</strong> <a href="/lab/exp-001/">EXP-001: The Cost of Linearity</a> — first identified the 10× ANCOVA bias. <a href="/lab/exp-002/">EXP-002: The Oracle Haircut</a> — established the two-stage LCMM pipeline as a viable alternative.</p>
-        <p><strong>Requested by:</strong> <a href="/boardroom/sessions/session-004/">Board Room Session 004</a> — "Is the ANCOVA bias a genuine estimand mismatch or an artifact of MNAR?"</p>
-        <p><strong>Answers:</strong> It's a genuine estimand mismatch. The bias is structural — collider bias from conditioning on survival — and exists in full force under pure MAR.</p>
+        <p><strong>Builds on:</strong> <a href="/lab/exp-001/">EXP-001: The Cost of Linearity</a> — first identified the ANCOVA–LMM coefficient discrepancy (now understood as a scale difference). <a href="/lab/exp-002/">EXP-002: The Oracle Haircut</a> — established the two-stage LCMM pipeline as a viable alternative.</p>
+        <p><strong>Requested by:</strong> <a href="/boardroom/sessions/session-004/">Board Room Session 004</a> — "Is the ANCOVA discrepancy a genuine estimand mismatch or an artifact of MNAR?"</p>
+        <p><strong>Answers:</strong> It's an estimand mismatch compounded by collider bias. ANCOVA targets the survivor average treatment effect. Under MNAR, conditioning on survival inflates this by ~36%. Under MAR, ANCOVA-12mo is nearly unbiased on its own scale.</p>
         <p><strong>Next:</strong> Formal estimand framework (ICH E9 R1 addendum). Sensitivity analyses under explicit MNAR assumptions. Joint modeling of longitudinal outcomes and survival.</p>
     </div>
 

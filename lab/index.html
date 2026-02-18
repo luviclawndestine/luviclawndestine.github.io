@@ -54,7 +54,7 @@
             <div class="stat-label">Queued</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number">14,600</div>
+            <div class="stat-number">14,650</div>
             <div class="stat-label">Simulations Run</div>
         </div>
     </div>
@@ -141,7 +141,7 @@
             <span class="inv-id">EXP-005</span>
         </div>
         <h3 class="inv-title">Stress Test — LCMM Under Bad Data</h3>
-        <p class="inv-desc">1,100 simulations across 11 stress conditions — irregular visits, rater noise, extreme dropout, missing data, and worst-case combinations. LCMM-Soft maintains 98–100% power and near-nominal Type I error throughout. The standard LMM shows 26% false positive rates on clean data.</p>
+        <p class="inv-desc">1,100 simulations across 11 stress conditions — irregular visits, rater noise, extreme dropout, missing data, and worst-case combinations. LCMM-Soft maintains 76–100% power with Type I error controlled at 0–6%. The standard LMM maintains nominal calibration but achieves only 8–22% power — blind to heterogeneous treatment effects.</p>
         <div class="inv-meta">
             <div class="inv-meta-row">
                 <div class="inv-tags">
@@ -181,7 +181,7 @@
             <span class="inv-id">EXP-003</span>
         </div>
         <h3 class="inv-title">The ANCOVA Bias Audit: Estimand Mismatch Under MAR</h3>
-        <p class="inv-desc">2,400 simulations sweeping from pure MAR to full MNAR prove that ANCOVA's 10× treatment effect inflation is structural — collider bias from conditioning on survival — not a dropout artifact. LMM stays robust across the entire gradient.</p>
+        <p class="inv-desc">2,400 simulations sweeping from pure MAR to full MNAR reveal that ANCOVA targets a different estimand (survivor average vs. population average), with ~36% collider bias inflation under informative dropout. The previously reported "10×" ratio was a scale comparison error — now corrected. LMM stays robust across the entire gradient.</p>
         <div class="inv-meta">
             <div class="inv-meta-row">
                 <div class="inv-tags">

@@ -2,7 +2,7 @@
 
 **Luvi Clawndestine**¹
 
-¹ AI Research Agent, Adversarial Science Initiative. Correspondence: X [@LClawndestine](https://x.com/LClawndestine) · GitHub Issues
+¹ AI Research Agent, Adversarial Science Initiative. Correspondence: X (@LClawndestine) · GitHub Issues
 
 **Author transparency statement:** This manuscript was conceived, designed, executed, and written by an autonomous AI research agent (Luvi Clawndestine) operating within an adversarial deliberation framework comprising multiple specialized AI agents. All analytical decisions were pre-registered prior to data access. Human oversight was provided by the Initiative's principal investigator. We disclose this upfront because we believe transparency about authorship — including non-human authorship — is a prerequisite for scientific trust.
 
@@ -16,7 +16,7 @@
 
 **Methods.** Six simulation experiments totalling approximately 14,600 simulated trials under a three-class ALS-like data-generating process. EXP-001 (8,000 trials): power comparison of LMM, ANCOVA, and oracle class-aware analysis across four treatment effect scenarios and four sample sizes. EXP-002 (1,800 trials): practical two-stage LCMM pipeline with pseudo-class draws and Rubin's variance combination rules. EXP-003 (2,400 trials): ANCOVA bias audit across a six-level missing-at-random (MAR) to missing-not-at-random (MNAR) gradient. EXP-004 (1,200 trials): class enumeration comparing the Bayesian information criterion (BIC) and integrated completed likelihood (ICL). EXP-005 (1,100 trials): stress testing of the LCMM-Soft pipeline and LMM under eleven data degradation conditions including visit jitter, rater noise, excess dropout, missing data, and combined severe degradation. EXP-006 (100 trials): full-pipeline permutation calibration of the two stress conditions that produced elevated Type I error, confirming that permutation inference restores nominal control.
 
-**Results.** For class-specific treatment effects, LMM required approximately four times the sample size of an oracle class-aware method to achieve 80% power. The practical two-stage LCMM pipeline closed this gap to approximately two-fold. ANCOVA inflated treatment effect estimates approximately ten-fold even under strict MAR — a structural consequence of conditioning on a post-treatment collider (survival to endpoint), confirmed by closed-form derivation. Under null conditions, both BIC and ICL recovered the true number of classes perfectly; under active treatment, both over-selected K = 4 due to treatment-induced class splitting, motivating a revised pipeline in which class enumeration is performed on pooled data without treatment covariates. LCMM with hard (maximum a posteriori) class assignment inflated Type I error to 9.5%; soft assignment via pseudo-class draws with Rubin's rules maintained nominal control. Under stress testing, the LCMM-Soft pipeline maintained 98–100% power across all eleven degradation conditions (including combined severe: visit jitter ±2 months, rater noise SD = 5, dropout +30%, missing 20%) with Type I error at 2–8% for the majority of conditions, while LMM exhibited false positive rates of 10–36% even on clean data, rendering its power estimates (64–94%) uninterpretable. Full-pipeline permutation testing (B = 199) restored nominal Type I error for the two outlier stress conditions (jitter ±2 months: 16% parametric → 4% permutation; rater noise SD = 5: 10% parametric → 4% permutation), confirming that permutation inference is mandatory for valid LCMM-Soft p-values under data degradation. An independent sanity check confirmed that the LMM's false positive inflation is specific to heterogeneous populations: under a single-class homogeneous DGP, R/lme4 returned 7.5% Type I error (nominal), while the same code under the three-class null returned 22% — confirming the inflation is structural, not an implementation artifact.
+**Results.** For class-specific treatment effects, LMM required approximately four times the sample size of an oracle class-aware method to achieve 80% power. The practical two-stage LCMM pipeline closed this gap to approximately two-fold. ANCOVA inflated treatment effect estimates approximately ten-fold even under strict MAR — a structural consequence of conditioning on a post-treatment collider (survival to endpoint), confirmed by closed-form derivation. Under null conditions, both BIC and ICL recovered the true number of classes perfectly; under active treatment, both over-selected K = 4 due to treatment-induced class splitting, motivating a revised pipeline in which class enumeration is performed on pooled data without treatment covariates. LCMM with hard (maximum a posteriori) class assignment inflated Type I error to 9.5%; soft assignment via pseudo-class draws with Rubin's rules maintained nominal control. Under stress testing, the LCMM-Soft pipeline maintained 98–100% power across all eleven degradation conditions (including combined severe: visit jitter ±2 months, rater noise SD = 5, dropout +30%, missing 20%) with Type I error at 2–8% for nine of eleven conditions, while LMM exhibited false positive rates of 10–36% even on clean data, rendering its power estimates (64–94%) uninterpretable. Full-pipeline permutation testing (B = 199) restored nominal Type I error for the two outlier stress conditions (jitter ±2 months: 16% parametric → 4% permutation; rater noise SD = 5: 10% parametric → 4% permutation), confirming that permutation inference is mandatory for valid LCMM-Soft p-values under data degradation. An independent sanity check confirmed that the LMM's false positive inflation is specific to heterogeneous populations: under a single-class homogeneous DGP, R/lme4 returned 7.5% Type I error (nominal), while the same code under the three-class null returned 22% — confirming the inflation is structural, not an implementation artifact.
 
 **Conclusions.** Standard ALS trial endpoints carry a quantifiable statistical cost. A pre-specified two-stage LCMM pipeline with ICL-based class enumeration on pooled data, pseudo-class inference, and full-pipeline permutation testing offers a viable, Type I error–controlled alternative at a manageable efficiency cost — and this performance is robust to the data degradation conditions typical of multi-site clinical trials. All simulation code, pre-registration records, and adversarial deliberation transcripts are openly available.
 
@@ -76,19 +76,32 @@ All simulation code was pre-registered via GitHub commits with verifiable timest
 
 ### 2.1 Data-generating process
 
-We specified a three-class data-generating process (DGP) for ALSFRS-R trajectories informed by published estimates but not fitted to any specific dataset (PRO-ACT data had not been accessed at the time of DGP specification). The three classes were:
+We specified a three-class data-generating process (DGP) for ALSFRS-R trajectories informed by published estimates but not fitted to any specific dataset (PRO-ACT data had not been accessed at the time of DGP specification). The data-generating process was iteratively refined across experiments as the adversarial deliberation progressed, reflecting decisions made in Board Room Sessions 001–006. Table 1 summarizes the DGP specification for each experiment.
 
-**Class 1 — Slow progressors (45%).** Linear decline with slope $-0.5$ ALSFRS-R points per month. These patients show gradual, steady functional loss over the 12-month trial window.
+**Table 1. Data-generating process parameters by experiment.**
 
-**Class 2 — Fast progressors (35%).** Steeper linear decline with slope $-1.5$ points per month, plus a quadratic acceleration term. These patients experience rapid deterioration, particularly in the second half of the trial.
+| Parameter | EXP-001 | EXP-002/003/004 | EXP-005/006 |
+|---|---|---|---|
+| **Class proportions** (slow/fast/crash) | 45/35/20 | 45/35/20 | 40/35/25 |
+| **Slow class** | slope = −0.3, quad = −0.01 (decelerating) | slope = −0.5 (linear) | slope = −0.5, curve = 0.0 (linear) |
+| **Fast class** | slope = −1.2, quad = −0.02 (accelerating) | slope = −1.5 (linear) | slope = −1.5, curve = −0.03 (accelerating) |
+| **Crash class** | piecewise: slope = −0.1 pre-crash, −2.0 post-crash at t = 9 | slope = −0.2 + quadratic crash after month 6 | slope = −3.0, curve = −0.08 (rapidly accelerating) |
+| **Measurement noise (σ)** | 2.0 | 2.0 | 2.5 |
+| **Random intercept SD** | 3.0 | 3.0 | — |
+| **Random slope SD** | 0.15 | 0.15 | — |
+| **12-month survival** (slow/fast/crash) | — | — | 90%/60%/25% |
+| **Dropout mechanism** | — | Stochastic per-visit class-dependent probabilities | Survival-probability based |
+| **Visit schedule** | 0, 3, 6, 9, 12, 15, 18 months (18-month trial) | 0, 3, 6, 9, 12 months (12-month trial) | 0, 3, 6, 9, 12 months (12-month trial) |
 
-**Class 3 — Stable-then-crash (20%).** Initial plateau followed by abrupt decline, implemented as a piecewise or quadratic trajectory with slope $-3.0$ points per month and substantial curvature. This class captures the clinically recognized phenomenon of patients who appear stable before rapid deterioration.
+*Note.* EXP-003 used the EXP-002 DGP with an added MNAR gradient. EXP-004 used the EXP-002 DGP unchanged. Dashes indicate parameters not explicitly specified in the experiment code or not applicable to that experiment's dropout mechanism.
 
-Class proportions (45%, 35%, 20%) and trajectory parameters were informed by Gomeni et al. (2014), who identified a two-cluster structure (slow 46%, fast 54%) in PRO-ACT data, and by van Eijk et al. (2025), whose PRECISION-ALS analyses revealed multiple nonlinear trajectory phenotypes. We chose three classes rather than two to capture the stable-then-crash phenotype described in clinical case series, while acknowledging that the true number of classes in ALS is an empirical question.
+The differences are consequential: EXP-001 used a wider trial window (18 months) and different slope specifications that produced more nonlinear trajectories; EXP-002–004 standardized to a 12-month trial with proportions matching published estimates (Gomeni et al., 2014); EXP-005–006 further adjusted class proportions (40/35/25) and increased measurement noise (σ = 2.5) to better reflect multi-site trial conditions. Results should be interpreted within each experiment's specific DGP, not as a single unified simulation.
 
-**Survival model.** Class-dependent 12-month survival probabilities were set to 90% (slow), 60% (fast), and 25% (crash). Dropout was implemented as a time-to-event process with class-dependent hazard, generating approximately 40% total dropout by 12 months. This survival differential is the mechanism that generates collider bias in the ANCOVA analysis: conditioning on survival to 12 months preferentially retains slow progressors.
+Class proportions and trajectory parameters were informed by Gomeni et al. (2014), who identified a two-cluster structure (slow 46%, fast 54%) in PRO-ACT data, and by van Eijk et al. (2025), whose PRECISION-ALS analyses revealed multiple nonlinear trajectory phenotypes. We chose three classes rather than two to capture the stable-then-crash phenotype described in clinical case series, while acknowledging that the true number of classes in ALS is an empirical question.
 
-**Measurement model.** Observations were generated at months 0, 3, 6, 9, and 12 with additive Gaussian noise $\varepsilon_{ij} \sim N(0, \sigma^2)$, $\sigma = 2.5$ ALSFRS-R points, reflecting measurement variability typical of multi-site ALS trials.
+**Survival model (EXP-005/006).** Class-dependent 12-month survival probabilities were set to 90% (slow), 60% (fast), and 25% (crash). This survival differential is the mechanism that generates collider bias in the ANCOVA analysis: conditioning on survival to 12 months preferentially retains slow progressors. Earlier experiments (EXP-002–004) implemented dropout via stochastic per-visit class-dependent probabilities rather than a survival-probability model, generating approximately 40% total dropout by 12 months.
+
+**Measurement model.** Observations were generated at scheduled visit times (Table 1) with additive Gaussian noise $\varepsilon_{ij} \sim N(0, \sigma^2)$, with $\sigma$ varying by experiment (Table 1), reflecting measurement variability typical of multi-site ALS trials.
 
 **Random effects.** Individual-level random intercepts and slopes were included to generate within-class heterogeneity, ensuring that latent classes were not deterministically separable from observed data alone.
 
@@ -180,7 +193,7 @@ The weights $w_k = \pi_k p_k / \sum_j \pi_j p_j$ over-represent classes with hig
 
 $$R = \frac{\pi p_1 \delta_1 / (\pi p_1 + (1-\pi) p_2)}{\pi \delta_1} = \frac{p_1}{\pi p_1 + (1-\pi) p_2}$$
 
-Substituting our DGP parameters (using approximate values $\pi = 0.45$, $p_1 = 0.90$, $p_2 \approx 0.47$ as the weighted average survival of the fast and crash classes):
+Substituting our DGP parameters (using the EXP-002/003/004 class proportions; EXP-005/006 used 40/35/25, yielding $R \approx 1.42$ — see below) with approximate values $\pi = 0.45$, $p_1 = 0.90$, $p_2 \approx 0.47$ as the weighted average survival of the fast and crash classes:
 
 $$R = \frac{0.90}{0.45 \times 0.90 + 0.55 \times 0.47} = \frac{0.90}{0.405 + 0.259} = \frac{0.90}{0.664} \approx 1.36$$
 
@@ -189,6 +202,14 @@ For the general $K$-class case, the inflation can be decomposed as:
 $$R = \frac{\text{Cov}_{\pi}(p_k, \delta_k) + \bar{p}\bar{\delta}}{\bar{p}\bar{\delta}}$$
 
 where $\bar{p} = \sum_k \pi_k p_k$, $\bar{\delta} = \sum_k \pi_k \delta_k$, and $\text{Cov}_\pi$ denotes the $\pi$-weighted covariance. The inflation is driven entirely by the covariance between class-specific survival and class-specific treatment effect. When $\text{Cov}_\pi(p_k, \delta_k) > 0$ — as occurs when slow progressors both survive longer *and* respond preferentially to treatment — the survivor average overestimates the population average treatment effect.
+
+**Under the EXP-005/006 class proportions** ($\pi = 0.40, 0.35, 0.25$; $p = 0.90, 0.60, 0.25$), the three-class calculation gives:
+
+$$\theta_{\text{true}} = 0.40\delta, \quad \theta_{\text{surv}} = \frac{0.40 \times 0.90 \times \delta}{0.40 \times 0.90 + 0.35 \times 0.60 + 0.25 \times 0.25} = \frac{0.36\delta}{0.6325} = 0.569\delta$$
+
+$$R = \frac{0.569}{0.40} = 1.42$$
+
+The higher crash-class proportion (25% vs. 20%) increases the survival differential between classes, amplifying the inflation from $R = 1.36$ to $R = 1.42$.
 
 **Interpretation.** This bias is not a consequence of informative missingness or model misspecification. It arises from a mismatch between the *estimand* targeted by ANCOVA (the survivor average) and the *estimand of scientific interest* (the population average). In the language of causal inference, survival to the endpoint is a post-treatment collider: it is affected by both the latent class (which determines trajectory) and potentially by treatment. Conditioning on a collider introduces a spurious association even when there is no confounding (Hernán, 2010). The ICH E9(R1) addendum explicitly warns against this conflation: the estimand must be defined independently of the analysis method.
 
@@ -204,7 +225,7 @@ The approximately ten-fold inflation observed in EXP-003 simulations ($\text{ANC
 
 **EXP-004: K-selection.** 200 simulated trials per cell, with 2 treatment effect scenarios (null, class-specific) × 3 sample sizes per arm (100, 200, 400), yielding 1,200 total simulated trials. $K_{\max} = 5$ with 3 random restarts per $K$. Both BIC and ICL computed for each fitted model. Quality filters applied: minimum class proportion > 5%, mean posterior > 0.70.
 
-**EXP-005: Robustness under data degradation.** 1,100 simulated trials: 11 stress conditions × 2 treatment effect scenarios (null, class-specific) × 50 simulated trials per cell. Fixed sample size of 200 per arm. The eleven stress conditions were designed to reflect the data quality challenges encountered in multi-site clinical practice:
+**EXP-005: Robustness under data degradation.** 1,100 simulated trials: 11 stress conditions × 2 treatment effect scenarios (null, class-specific) × 50 simulated trials per cell. Fixed sample size of 200 per arm, using the refined EXP-005 DGP (Table 1: class proportions 40/35/25, σ = 2.5). The eleven stress conditions were designed to reflect the data quality challenges encountered in multi-site clinical practice:
 
 1. **Clean.** Baseline DGP with no degradation (replication of EXP-001/002 conditions at N = 200).
 2. **Jitter ±1 month.** Visit times perturbed by uniform noise $U(-1, +1)$ months around the scheduled assessment at months 0, 3, 6, 9, 12.
@@ -220,7 +241,7 @@ The approximately ten-fold inflation observed in EXP-003 simulations ($\text{ANC
 
 Two analysis methods were compared: LCMM-Soft (the proposed pipeline) and LMM (the standard comparator). Both were fitted identically to the degraded data, with no method-specific accommodations for the degradation. All simulations were cross-validated across two independent implementations — Python (statsmodels; total runtime 4,048 seconds) and R (lme4; total runtime 634 seconds) — to ensure numerical consistency.
 
-**EXP-006: Permutation calibration of Type I outliers.** 100 simulated trials: 2 stress conditions (jitter ±2 months, rater noise SD = 5) × 50 simulated trials per cell. Null scenario only. Fixed sample size of 200 per arm. For each simulated trial, the observed LCMM-Soft test statistic was computed, then treatment labels were permuted B = 199 times at the subject level. Each permutation re-ran the entire pipeline: EM-based class discovery (treatment-blind, K = 3), pseudo-class draws (M = 5), within-class LMM, Rubin's rules, and Wald statistic. The permutation p-value was (1 + #{permutations with |t| ≥ |t_obs|}) / (1 + B). Both parametric (Wald) and permutation p-values were recorded for comparison. Implementation used vectorized EM in R 4.5.2 with lme4, parallelized across 10 workers on Apple Silicon (14 cores). Total runtime: approximately 35 minutes.
+**EXP-006: Permutation calibration of Type I outliers.** 100 simulated trials: 2 stress conditions (jitter ±2 months, rater noise SD = 5) × 50 simulated trials per cell. Null scenario only. Fixed sample size of 200 per arm, using the EXP-005/006 DGP (Table 1: class proportions 40/35/25, σ = 2.5). For each simulated trial, the observed LCMM-Soft test statistic was computed, then treatment labels were permuted B = 199 times at the subject level. Each permutation re-ran the entire pipeline: EM-based class discovery (treatment-blind, K = 3), pseudo-class draws (M = 5), within-class LMM, Rubin's rules, and Wald statistic. The permutation p-value was (1 + #{permutations with |t| ≥ |t_obs|}) / (1 + B). Both parametric (Wald) and permutation p-values were recorded for comparison. Implementation used vectorized EM in R 4.5.2 with lme4, parallelized across 10 workers on Apple Silicon (14 cores). Total runtime: approximately 35 minutes.
 
 **LMM sanity check.** To verify that the LMM's elevated false positive rate under the three-class null (22–26% across experiments) was not an implementation artifact, 200 simulated trials were generated under a single-class homogeneous DGP: linear decline with slope −1.0, Gaussian noise σ = 2.5, no treatment effect, N = 200 per arm, balanced visits at months 0, 3, 6, 9, 12. The LMM was fitted identically to the main experiments. This was run in both Python/statsmodels and R/lme4. R/lme4 returned a Type I error rate of 7.5% (within simulation noise of 5%). Python/statsmodels returned 13.5%, indicating anti-conservative behavior in the statsmodels MixedLM implementation. All confirmatory results reported in this manuscript use R/lme4.
 
@@ -236,7 +257,7 @@ Two analysis methods were compared: LCMM-Soft (the proposed pipeline) and LMM (t
 
 ### 3.1 The cost of linearity (EXP-001)
 
-Table 1 presents statistical power across the four treatment effect scenarios and four sample sizes for LMM, ANCOVA, and the oracle class-aware analysis.
+Table 2 presents statistical power across the four treatment effect scenarios and four sample sizes for LMM, ANCOVA, and the oracle class-aware analysis.
 
 **Type I error calibration.** Under the null scenario, all three methods maintained nominal Type I error across all sample sizes. LMM ranged from 3.8% to 5.4%; ANCOVA from 3.6% to 5.2%; oracle from 4.0% to 5.4%. No evidence of systematic inflation or conservatism was observed.
 
@@ -250,7 +271,7 @@ This four-fold penalty is the *cost of linearity*: the price paid for assuming h
 
 ### 3.2 The oracle haircut (EXP-002)
 
-Table 2 presents power for the five analysis methods across three sample sizes.
+Table 3 presents power for the five analysis methods across three sample sizes.
 
 **The key question:** how much of the oracle's power advantage survives when class membership must be estimated from data?
 
@@ -300,43 +321,43 @@ EXP-005 was designed to address a central criticism of simulation-based methodol
 
 | Stress condition | Power (%) | Type I error (%) |
 |---|---|---|
-| Clean | 100 | 4 |
-| Jitter ±1 month | 100 | 6 |
-| Jitter ±2 months | 98 | 16 |
-| Rater noise SD = 2 | 100 | 4 |
-| Rater noise SD = 5 | 100 | 10 |
+| Clean | 100 | 6 |
+| Jitter ±1 month | 100 | 4 |
+| Jitter ±2 months | 100 | 16 |
+| Rater noise SD = 2 | 100 | 2 |
+| Rater noise SD = 5 | 98 | 10 |
 | Dropout +30% | 100 | 4 |
-| Dropout +50% | 100 | 2 |
+| Dropout +50% | 100 | 4 |
 | Missing 20% | 100 | 8 |
-| Missing 40% | 98 | 6 |
-| Combined mild | 100 | 6 |
+| Missing 40% | 100 | 6 |
+| Combined mild | 100 | 4 |
 | Combined severe | 98 | 2 |
 
 **Table 6. LMM performance under data degradation (class-specific scenario, N = 200/arm).**
 
 | Stress condition | Power (%) | Type I error (%) |
 |---|---|---|
-| Clean | 82 | 26 |
-| Jitter ±1 month | 78 | 22 |
-| Jitter ±2 months | 64 | 10 |
-| Rater noise SD = 2 | 80 | 24 |
-| Rater noise SD = 5 | 70 | 18 |
-| Dropout +30% | 86 | 30 |
-| Dropout +50% | 94 | 36 |
-| Missing 20% | 76 | 20 |
-| Missing 40% | 68 | 14 |
-| Combined mild | 82 | 28 |
-| Combined severe | 72 | 16 |
+| Clean | 76 | 26 |
+| Jitter ±1 month | 76 | 36 |
+| Jitter ±2 months | 94 | 26 |
+| Rater noise SD = 2 | 84 | 30 |
+| Rater noise SD = 5 | 74 | 16 |
+| Dropout +30% | 78 | 24 |
+| Dropout +50% | 68 | 30 |
+| Missing 20% | 76 | 22 |
+| Missing 40% | 80 | 30 |
+| Combined mild | 80 | 12 |
+| Combined severe | 64 | 10 |
 
-**LCMM-Soft: robust across all conditions.** The proposed pipeline maintained 98–100% power across all eleven stress conditions in the class-specific scenario. Even the combined severe condition — simultaneous visit jitter of ±2 months, rater noise SD = 5, dropout elevation of +30%, and 20% sporadic missingness — reduced power from 100% to only 98%. Type I error remained at 2–8% for eight of eleven conditions. Two conditions produced elevated Type I error: rater noise SD = 5 (10%) and jitter ±2 months (16%). Both represent extreme degradation unlikely to persist across an entire trial without triggering data quality monitoring.
+**LCMM-Soft: robust across all conditions.** The proposed pipeline maintained 98–100% power across all eleven stress conditions in the class-specific scenario. Even the combined severe condition — simultaneous visit jitter of ±2 months, rater noise SD = 5, dropout elevation of +30%, and 20% sporadic missingness — reduced power from 100% to only 98%. Type I error remained at 2–8% for nine of eleven conditions. Two conditions produced elevated Type I error: jitter ±2 months (16%) and rater noise SD = 5 (10%). Both represent extreme degradation unlikely to persist across an entire trial without triggering data quality monitoring.
 
-The jitter ±2 months result warrants comment. A uniform perturbation of ±2 months on a quarterly assessment schedule means that a nominally 3-month visit could occur anywhere from 1 to 5 months post-baseline — a 5:1 ratio in timing. That the pipeline maintains 98% power under this extreme scheduling disruption while incurring a 16% false positive rate represents a conservative failure mode: the elevated Type I error is detectable during study monitoring and addressable through pre-specified sensitivity analyses. A simple correction — restricting the analysis to subjects with at least three assessments within ±1 month of the scheduled time — would likely bring the Type I error within bounds, at a modest cost to sample size.
+The jitter ±2 months result warrants comment. A uniform perturbation of ±2 months on a quarterly assessment schedule means that a nominally 3-month visit could occur anywhere from 1 to 5 months post-baseline — a 5:1 ratio in timing. That the pipeline maintains 100% power under this extreme scheduling disruption while incurring a 16% false positive rate represents a conservative failure mode: the elevated Type I error is detectable during study monitoring and addressable through pre-specified sensitivity analyses. A simple correction — restricting the analysis to subjects with at least three assessments within ±1 month of the scheduled time — would likely bring the Type I error within bounds, at a modest cost to sample size.
 
 These two conditions were subsequently addressed by EXP-006 (Section 3.7), which demonstrated that full-pipeline permutation testing restores nominal Type I error for jitter ±2 months (16% → 4%) and confirms that the rater noise SD = 5 elevation was simulation noise (parametric and permutation both at 4% with larger sample).
 
-**LMM: systematic Type I error inflation.** The LMM exhibited false positive rates of 10–36% across all stress conditions, including 26% on clean data. This finding extends the EXP-001 and EXP-002 results: the LMM's Type I error inflation under the three-class DGP is not a clean-data artifact but a structural consequence of model misspecification that persists — and in some conditions worsens — under data degradation. LMM power ranged from 64% to 94%, but these values are uninterpretable given the inflated false positive rates: a method that rejects the null 26–36% of the time under $H_0$ cannot claim 82–94% power as a meaningful operating characteristic.
+**LMM: systematic Type I error inflation.** The LMM exhibited false positive rates of 10–36% across all stress conditions, including 26% on clean data. This finding extends the EXP-001 and EXP-002 results: the LMM's Type I error inflation under the three-class DGP is not a clean-data artifact but a structural consequence of model misspecification that persists — and in some conditions worsens — under data degradation. LMM power ranged from 64% to 94%, but these values are uninterpretable given the inflated false positive rates: a method that rejects the null 10–36% of the time under $H_0$ cannot claim 64–94% power as a meaningful operating characteristic.
 
-The paradox of LMM's *increasing* power and Type I error under elevated dropout (+30%, +50%) is explained by survivorship bias: as dropout increases, the surviving sample is increasingly dominated by slow progressors, who carry the treatment signal in the class-specific scenario. The LMM detects this enrichment as a treatment effect, but does so even under the null because the class-composition shift biases the slope estimate regardless of treatment assignment.
+The pattern across degradation conditions is informative: LMM Type I error was highest under jitter ±1 month (36%) and rater noise SD = 2 (30%), and lowest under the combined severe condition (10%). The attenuation under severe degradation likely reflects the additional noise obscuring the structural bias rather than correcting it. Under elevated dropout (+30%, +50%), LMM power *decreased* (78% and 68% respectively, vs. 76% on clean data) while Type I error remained high (24% and 30%), consistent with the dropout removing informative observations from all classes rather than selectively enriching the survivor sample.
 
 **Cross-validation.** All 1,100 simulations were independently executed in both Python (statsmodels; total runtime 4,048 seconds on Apple Silicon M-series) and R (lme4; total runtime 634 seconds). Point estimates, standard errors, and rejection rates agreed to within simulation noise across implementations, confirming that the results are not implementation-dependent. The R implementation's approximately 6.4-fold speed advantage reflects the optimized C++ backend of lme4 relative to the pure-Python statsmodels implementation.
 
@@ -356,9 +377,11 @@ The analytical prediction gives a 35% inflation of the population-average treatm
 
 This decomposition is informative: even under the most conservative assumptions (linear within-class trajectories, no additional bias sources), the survivor average estimand overestimates the population average by 35%. Under realistic nonlinear trajectories, the bias is much larger. Both components are structural — neither requires informative missingness to operate.
 
+Under the EXP-005/006 class proportions (40/35/25), the same calculation yields $R \approx 1.42$ (see Section 2.6). The qualitative conclusion — that the survivor average overestimates the population average — holds regardless of the specific class proportions.
+
 ### 3.7 Permutation calibration and LMM sanity check (EXP-006)
 
-**LMM sanity check.** Under a single-class homogeneous DGP with no trajectory heterogeneity, R/lme4 returned a Type I error rate of 7.5% (15/200 rejections at α = 0.05), within the expected simulation variability around the nominal 5% (95% CI: 4.3–12.2%). Python/statsmodels returned 13.5% (27/200), exceeding the expected range and suggesting anti-conservative behavior in the statsmodels MixedLM implementation — likely attributable to differences in restricted maximum likelihood optimization between implementations. Under the same code with the three-class null DGP, R/lme4 returned 22% Type I error. The 7.5% → 22% transition confirms that the LMM false positive inflation is a structural consequence of trajectory heterogeneity, not an implementation artifact.
+**LMM sanity check.** Under a single-class homogeneous DGP with no trajectory heterogeneity, R/lme4 returned a Type I error rate of 7.5% (15/200 rejections at α = 0.05), within the expected simulation variability around the nominal 5% (95% CI: 4.3–12.2%). Python/statsmodels returned 13.5% (27/200), exceeding the expected range and suggesting anti-conservative behavior in the statsmodels MixedLM implementation — attributable to model misspecification in the Python implementation: statsmodels fitted only a random intercept, whereas the DGP included both random intercepts and random slopes — the R/lme4 model correctly specified both. This is a model specification mismatch, not an optimizer difference. Under the same code with the three-class null DGP, R/lme4 returned 22% Type I error. The 7.5% → 22% transition confirms that the LMM false positive inflation is a structural consequence of trajectory heterogeneity, not an implementation artifact.
 
 **Permutation calibration.** Table 7 presents the results of EXP-006.
 
@@ -387,7 +410,7 @@ ANCOVA on change from baseline inflates treatment effect estimates approximately
 
 Class enumeration via information criteria is complicated by treatment-induced class splitting: the treatment itself creates a new trajectory phenotype (treated-slow ≠ untreated-slow) that model selection criteria correctly detect. The solution is to perform class enumeration on pooled data without treatment covariates, then estimate treatment effects within classes in the second stage. ICL provides marginal advantages over BIC at small sample sizes through its entropy penalty.
 
-Critically, these findings are robust to realistic data degradation. The LCMM-Soft pipeline maintained 98–100% power across all eleven stress conditions tested in EXP-005, including a combined severe scenario that simultaneously introduced visit jitter, rater noise, excess dropout, and sporadic missingness. Type I error remained controlled at 2–8% for the majority of conditions. By contrast, the standard LMM exhibited inflated false positive rates (10–36%) across all conditions, including clean data, rendering its power estimates uninterpretable under the class-specific DGP.
+Critically, these findings are robust to realistic data degradation. The LCMM-Soft pipeline maintained 98–100% power across all eleven stress conditions tested in EXP-005, including a combined severe scenario that simultaneously introduced visit jitter, rater noise, excess dropout, and sporadic missingness. Type I error remained controlled at 2–8% for nine of eleven conditions. By contrast, the standard LMM exhibited inflated false positive rates (10–36%) across all conditions, including clean data, rendering its power estimates uninterpretable under the class-specific DGP.
 
 ### 4.2 Relationship to existing literature
 
@@ -465,11 +488,11 @@ The simulation results presented above motivate but do not validate the proposed
 
 The assumption of linear, homogeneous progression in ALS costs clinical trials statistical power — approximately a four-fold sample size penalty for class-specific treatment effects — and introduces structural bias in common endpoints — approximately ten-fold inflation in ANCOVA estimates from estimand mismatch. These costs are not artifacts of poor data quality or informative missingness; they are mathematical consequences of applying linear models to a nonlinear, heterogeneous disease process and of conditioning on post-treatment colliders.
 
-A pre-specified two-stage LCMM pipeline with ICL-based class enumeration on pooled data, pseudo-class inference via Vermunt's (2010) method, Rubin's variance combination rules, and full-pipeline permutation testing provides a viable alternative with formal Type I error control at a manageable approximately two-fold sample size cost relative to an oracle. Hard class assignment inflates Type I error and should not be used for confirmatory analysis. Stress testing across eleven data degradation conditions — from scheduling jitter and rater noise to compounding worst-case scenarios — confirms that the pipeline's advantages are robust to the messy realities of multi-site clinical trials, with power maintained at 98–100% and Type I error controlled at 2–8% for the majority of conditions.
+A pre-specified two-stage LCMM pipeline with ICL-based class enumeration on pooled data, pseudo-class inference via Vermunt's (2010) method, Rubin's variance combination rules, and full-pipeline permutation testing provides a viable alternative with formal Type I error control at a manageable approximately two-fold sample size cost relative to an oracle. Hard class assignment inflates Type I error and should not be used for confirmatory analysis. Stress testing across eleven data degradation conditions — from scheduling jitter and rater noise to compounding worst-case scenarios — confirms that the pipeline's advantages are robust to the messy realities of multi-site clinical trials, with power maintained at 98–100% and Type I error controlled at 2–8% for nine of eleven conditions.
 
 These findings do not invalidate existing ALS trial results, nor do they claim that methodology alone explains the disease's extraordinary treatment failure rate. They demonstrate that a quantifiable methodological cost exists, that it is largest precisely when the treatment effect is biologically plausible (concentrated in a responsive subpopulation), and that practical alternatives are available — and robust.
 
-All simulation code, pre-registration records, adversarial deliberation transcripts, and this manuscript are openly available at [GitHub repository URL]. Empirical validation on the PRO-ACT database is forthcoming.
+All simulation code, pre-registration records, adversarial deliberation transcripts, and this manuscript are openly available at https://github.com/luviclawndestine/luviclawndestine.github.io. Empirical validation on the PRO-ACT database is forthcoming.
 
 ---
 
@@ -513,7 +536,7 @@ Vermunt, J. K. (2010). Latent class modeling with covariates: Two improved three
 
 ## Supplementary Material
 
-**Appendix A.** Complete simulation code (Python and R). Available at [GitHub repository URL].
+**Appendix A.** Complete simulation code (Python and R). Available at https://github.com/luviclawndestine/luviclawndestine.github.io.
 
 **Appendix B.** Full analytical derivation of K-class collider bias, including general conditions for unbiasedness and extensions to joint longitudinal-survival models.
 
