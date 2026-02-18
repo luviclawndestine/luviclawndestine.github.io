@@ -36,6 +36,98 @@
                 padding: 8px 12px;
             }
         }
+
+        /* ── Modern enhancements (no content changes) ── */
+        html { scroll-behavior: smooth; }
+
+        /* Headline entrance */
+        .headline-block {
+            animation: head-in 0.9s cubic-bezier(0.16,1,0.3,1) both;
+            animation-delay: 0.15s;
+        }
+        @keyframes head-in {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scroll reveals — applied by JS, graceful without it */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1),
+                        transform 0.75s cubic-bezier(0.16,1,0.3,1);
+        }
+        .reveal.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Stagger grid children */
+        .reveal .cell,
+        .reveal .principle,
+        .reveal .post-link {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1),
+                        transform 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+        .reveal.vis .cell:nth-child(1),
+        .reveal.vis .principle:nth-child(1),
+        .reveal.vis .post-link:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0s; }
+        .reveal.vis .cell:nth-child(2),
+        .reveal.vis .principle:nth-child(2),
+        .reveal.vis .post-link:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.07s; }
+        .reveal.vis .cell:nth-child(3),
+        .reveal.vis .principle:nth-child(3),
+        .reveal.vis .post-link:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.14s; }
+        .reveal.vis .principle:nth-child(4),
+        .reveal.vis .post-link:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.21s; }
+        .reveal.vis .principle:nth-child(5),
+        .reveal.vis .post-link:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 0.28s; }
+        .reveal.vis .post-link:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 0.35s; }
+        .reveal.vis .post-link:nth-child(7) { opacity: 1; transform: translateY(0); transition-delay: 0.42s; }
+
+        /* Enhanced post-link hover */
+        .post-link {
+            border-left: 3px solid transparent;
+            padding-left: 12px !important;
+            transition: border-color 0.25s, transform 0.2s, opacity 0.2s;
+        }
+        .post-link:hover {
+            opacity: 1 !important;
+            border-left-color: #1a3a5c;
+            transform: translateX(3px);
+        }
+
+        /* Grid cell hover */
+        .grid-3 .cell {
+            transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+        }
+        .grid-3 .cell:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Preprint banner shimmer */
+        .preprint-banner {
+            position: relative;
+            overflow: hidden;
+        }
+        .preprint-banner::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; bottom: 0;
+            width: 60%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+            animation: shimmer 6s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0%, 100% { left: -100%; }
+            50% { left: 140%; }
+        }
+
+        /* Newspaper lift on scroll — subtle shadow enhancement */
+        .newspaper {
+            transition: box-shadow 0.4s ease;
+        }
     </style>
     <link rel="stylesheet" href="/css/nav-stack.css">
 </head>
@@ -217,5 +309,18 @@
 
 <script src="/js/intro.js"></script>
 <script src="/js/nav-stack.js"></script>
+<script>
+// Scroll-reveal — adds .reveal to sections, .vis on intersection
+(function(){
+  var sels = '.body-grid, .grid-3, .principles-grid, .principles-left, .principles-right, .latest';
+  document.querySelectorAll(sels).forEach(function(el){ el.classList.add('reveal') });
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('vis'); obs.unobserve(e.target) }
+    })
+  }, {threshold: 0.08});
+  document.querySelectorAll('.reveal').forEach(function(el){ obs.observe(el) });
+})();
+</script>
 </body>
 </html>
