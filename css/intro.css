@@ -1,0 +1,293 @@
+/* ════════════════════════════════════════════════════════════
+   LUVI CLAWNDESTINE — INTRO EXPERIENCE
+   Fonts: Space Grotesk (narrative), Syne (title), Space Mono (data)
+   ════════════════════════════════════════════════════════════ */
+
+#intro {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: #020208;
+    overflow: hidden;
+}
+
+#intro-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ── GATE SCREEN ── */
+#intro-gate {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    cursor: pointer;
+}
+
+#intro-gate-btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.4s, transform 0.3s;
+    animation: gate-breathe 3s ease-in-out infinite;
+}
+#intro-gate-btn:hover {
+    border-color: rgba(255,255,255,0.6);
+    transform: scale(1.05);
+}
+#intro-gate-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: rgba(255,255,255,0.5);
+    margin-left: 3px;
+    transition: fill 0.3s;
+}
+#intro-gate-btn:hover svg { fill: rgba(255,255,255,0.8); }
+
+@keyframes gate-breathe {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.12); }
+    50% { box-shadow: 0 0 0 16px rgba(255,255,255,0); }
+}
+
+.gate-label {
+    margin-top: 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    user-select: none;
+}
+
+/* ── TEXT LAYER ── */
+#intro-text {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.it {
+    position: absolute;
+    color: #fff;
+    text-align: center;
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(6px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, filter, transform;
+    max-width: 90vw;
+    line-height: 1.5;
+}
+.it.v {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+}
+.it.out {
+    opacity: 0;
+    filter: blur(3px);
+    transform: translateY(-4px);
+    transition-duration: 0.5s;
+}
+
+/* ── TEXT STYLES ── */
+
+/* Narrative text — Space Grotesk: geometric, techy, distinctive */
+.it--narr {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(17px, 2.5vw, 24px);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.85);
+}
+
+/* Emphasis — Space Grotesk heavier */
+.it--emp {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(22px, 3.2vw, 32px);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+}
+
+/* Computation / data — Space Mono, big number with glow */
+.it--comp {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.3;
+}
+.it--comp .comp-num {
+    font-size: clamp(40px, 7vw, 68px);
+    color: rgba(255,255,255,0.95);
+    text-shadow: 0 0 40px rgba(255,255,255,0.15), 0 0 80px rgba(91,155,213,0.08);
+    display: block;
+}
+.it--comp .comp-label {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(13px, 1.8vw, 18px);
+    font-weight: 300;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Stats — Space Mono */
+.it--stat {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+.it--stat-dim {
+    font-size: clamp(36px, 6vw, 56px);
+    color: rgba(255,255,255,0.25);
+}
+.it--stat-bright {
+    font-size: clamp(36px, 6vw, 56px);
+    color: #fff;
+    text-shadow: 0 0 30px rgba(255,255,255,0.3), 0 0 60px rgba(91,155,213,0.1);
+}
+
+/* Title — Syne: bold, editorial, brutalist character */
+.it--title {
+    font-family: 'Syne', system-ui, sans-serif;
+    font-size: clamp(30px, 5.5vw, 60px);
+    font-weight: 800;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+}
+
+/* AI Identity — Space Grotesk with cursor blink */
+.it--identity {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(14px, 1.8vw, 18px);
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 2px;
+}
+.it--identity::after {
+    content: '▊';
+    animation: cursor-blink 1s step-end infinite;
+    opacity: 0.4;
+    margin-left: 3px;
+    font-size: 0.85em;
+}
+@keyframes cursor-blink {
+    50% { opacity: 0; }
+}
+
+/* Subtitle */
+.it--sub {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(13px, 1.6vw, 16px);
+    font-weight: 300;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1px;
+}
+
+/* ── CTA BUTTONS ── */
+.intro-ctas {
+    display: flex;
+    gap: 16px;
+    pointer-events: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.intro-cta {
+    display: inline-block;
+    padding: 14px 32px;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.7);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    background: transparent;
+}
+.intro-cta:hover {
+    background: rgba(255,255,255,0.95);
+    color: #0a0a10;
+    border-color: #fff;
+}
+.intro-cta-quiet {
+    border: none;
+    padding: 10px 20px;
+    color: rgba(255,255,255,0.2);
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+.intro-cta-quiet:hover {
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+}
+
+/* ── SKIP ── */
+#intro-skip {
+    position: absolute;
+    bottom: 24px;
+    right: 28px;
+    z-index: 4;
+    background: none;
+    border: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.15);
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: color 0.3s;
+    opacity: 0;
+    pointer-events: none;
+}
+#intro-skip.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+#intro-skip:hover { color: rgba(255,255,255,0.5); }
+
+/* ── TRANSITION OUT ── */
+#intro.ending {
+    transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.intro-active {
+    background: #020208 !important;
+    overflow: hidden;
+}
+body.intro-ending {
+    transition: background 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #d5cebb !important;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+    #intro-gate-btn { width: 60px; height: 60px; }
+    .gate-label { font-size: 8px; letter-spacing: 2px; }
+    .intro-cta { padding: 12px 24px; font-size: 9px; }
+    #intro-skip { bottom: 16px; right: 16px; }
+}

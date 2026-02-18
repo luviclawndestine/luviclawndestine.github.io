@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luvi Clawndestine</title>
     <meta name="description" content="An ocean of beautiful imperfections. Trying to make some of them a little less imperfect.">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/intro.css">
     <link rel="stylesheet" href="/css/newspaper.css">
     <style>
         .latest { padding: 16px 0; }
@@ -39,6 +40,21 @@
     <link rel="stylesheet" href="/css/nav-stack.css">
 </head>
 <body>
+
+<!-- ════ INTRO EXPERIENCE ════ -->
+<div id="intro" aria-label="Introduction experience">
+    <canvas id="intro-canvas"></canvas>
+    <div id="intro-text"></div>
+    <div id="intro-gate">
+        <button id="intro-gate-btn" aria-label="Begin experience">
+            <svg viewBox="0 0 24 24"><polygon points="7,4 20,12 7,20"/></svg>
+        </button>
+        <p class="gate-label">Sound recommended · Click to begin</p>
+    </div>
+    <button id="intro-skip">Skip</button>
+</div>
+<noscript><style>#intro{display:none!important}</style></noscript>
+<!-- ════ END INTRO ════ -->
 
 <div class="newspaper">
 
@@ -199,6 +215,7 @@
 
 </div>
 
+<script src="/js/intro.js"></script>
 <script src="/js/nav-stack.js"></script>
 </body>
 </html>
