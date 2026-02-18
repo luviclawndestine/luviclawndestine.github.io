@@ -1,8 +1,4 @@
-/* ═══════════════════════════════════════════════════════
-   PAPER STACK NAVIGATION
-   Each page is a physical paper in a messy desk stack.
-   Peek from the left, slide out on hover, slightly askew.
-   ═══════════════════════════════════════════════════════ */
+/* ─── NEWSPAPER STACK NAVIGATION ─── */
 
 .paper-stack {
     position: fixed;
@@ -13,208 +9,170 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 8px 0;
+    padding: 12px 0;
 }
 
-/* ── Each paper ── */
-.paper-page {
+.paper-tab {
     display: flex;
     align-items: center;
     gap: 10px;
     text-decoration: none;
-    color: #5a5a48;
+    color: #6a6a58;
     position: relative;
-    height: 46px;
+    height: 40px;
     padding: 0 14px;
-    background: var(--pc, #ece7dc);
-    border: 1px solid rgba(175, 170, 158, 0.5);
+    background: #e8e3d8;
+    border: 1px solid #c4bfb0;
     border-left: none;
-    border-radius: 0 3px 3px 0;
+    border-radius: 0 6px 6px 0;
     cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
     overflow: hidden;
-    width: 18px;
-    transform-origin: left center;
-    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.35s,
-                background 0.25s;
-    box-shadow: 2px 1px 6px rgba(0,0,0,0.05),
-                inset 0 1px 0 rgba(255,255,255,0.5);
+    width: 44px;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
 }
 
-/* Paper texture — same noise as newspaper */
-.paper-page::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-}
-
-/* Messy stack — slight rotations & offsets per paper.
-   JS applies data-i attribute; CSS uses nth-child fallback. */
-.paper-page:nth-child(1)  { --pc: #ede8dd; --rot: -0.3deg; margin-left: 0px; }
-.paper-page:nth-child(2)  { --pc: #e8e2d6; --rot:  0.6deg; margin-left: 2px; }
-.paper-page:nth-child(3)  { --pc: #f0ebe0; --rot: -0.7deg; margin-left: 0px; }
-.paper-page:nth-child(4)  { --pc: #eae4d8; --rot:  0.3deg; margin-left: 3px; }
-.paper-page:nth-child(5)  { --pc: #e7e1d5; --rot: -0.5deg; margin-left: 1px; }
-.paper-page:nth-child(6)  { --pc: #ece7dc; --rot:  0.8deg; margin-left: 2px; }
-.paper-page:nth-child(7)  { --pc: #e9e3d7; --rot: -0.4deg; margin-left: 0px; }
-.paper-page:nth-child(8)  { --pc: #ebe5da; --rot:  0.5deg; margin-left: 2px; }
-.paper-page:nth-child(9)  { --pc: #e6e0d4; --rot: -0.6deg; margin-left: 1px; }
-.paper-page:nth-child(10) { --pc: #ede8dd; --rot:  0.2deg; margin-left: 3px; }
-.paper-page:nth-child(11) { --pc: #e8e2d6; --rot: -0.3deg; margin-left: 0px; }
-.paper-page:nth-child(12) { --pc: #eae4d8; --rot:  0.7deg; margin-left: 2px; }
-
-/* Apply rotation */
-.paper-page {
-    transform: rotate(var(--rot, 0deg));
-}
-
-/* ── Hover: straighten + slide out ── */
-.paper-page:hover {
-    width: 190px;
-    transform: rotate(0deg) translateX(3px);
-    box-shadow: 5px 2px 18px rgba(0,0,0,0.12),
-                inset 0 1px 0 rgba(255,255,255,0.5);
+.paper-tab:hover {
+    width: 200px;
+    background: #f0ebe0;
+    box-shadow: 3px 1px 10px rgba(0,0,0,0.1);
     z-index: 10;
     color: #1a1a18;
-    background: #f4efe4;
 }
 
-/* Disturb the stack — others shift when one is hovered */
-.paper-stack:hover .paper-page:not(:hover):not(.current) {
-    transform: rotate(var(--rot, 0deg)) translateX(-1px);
-}
-
-/* ── Current page: pulled out, dark ── */
-.paper-page.current {
-    width: 190px;
-    transform: rotate(0deg);
+/* Current page */
+.paper-tab.current {
+    width: 200px;
     background: #1a1a18;
     border-color: #1a1a18;
     color: #f0ebe0;
-    box-shadow: 5px 2px 20px rgba(0,0,0,0.18),
-                inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow: 3px 1px 12px rgba(0,0,0,0.15);
     z-index: 5;
 }
-.paper-page.current:hover {
-    background: #2a2a25;
-    transform: rotate(0deg) translateX(3px);
+.paper-tab.current:hover {
+    background: #2a2a28;
 }
 
-/* ── Ancestor (parent section) ── */
-.paper-page.ancestor {
-    border-color: rgba(140, 135, 120, 0.6);
-    width: 22px;
+/* Ancestor */
+.paper-tab.ancestor {
+    background: #f0ebe0;
+    border-color: #999080;
+    color: #4a4a3a;
+    width: 44px;
 }
-.paper-page.ancestor:hover {
+.paper-tab.ancestor:hover {
+    width: 200px;
+}
+
+/* Child tabs — indented */
+.paper-tab.child {
+    margin-left: 10px;
+    width: 36px;
+    height: 36px;
+}
+.paper-tab.child:hover {
+    width: 200px;
+}
+.paper-tab.child.current {
     width: 190px;
 }
 
-/* ── Child pages — thinner, indented ── */
-.paper-page.child {
-    height: 38px;
-    margin-left: 8px !important;
-    width: 14px;
-    border-color: rgba(175, 170, 158, 0.35);
-}
-.paper-page.child:hover { width: 190px; }
-.paper-page.child.current { width: 180px; margin-left: 8px !important; }
-
-/* ── Icon ── */
-.paper-page-icon {
-    font-size: 13px;
+/* Icon */
+.paper-tab-icon {
+    font-size: 15px;
     flex-shrink: 0;
-    width: 16px;
+    width: 18px;
     text-align: center;
 }
 
-/* ── Title ── */
-.paper-page-title {
+/* Label — the readable title */
+.paper-tab-label {
     font-family: 'Playfair Display', serif;
     font-size: 12px;
     font-weight: 700;
-    white-space: nowrap;
     opacity: 0;
-    transition: opacity 0.15s;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
 }
-.paper-page:hover .paper-page-title,
-.paper-page.current .paper-page-title {
+.paper-tab:hover .paper-tab-label,
+.paper-tab.current .paper-tab-label {
     opacity: 1;
 }
 
-/* ── Nudge content right on desktop ── */
+/* Section subtitle for children */
+.paper-tab-section {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.2s;
+    color: #8a8a78;
+    flex-shrink: 0;
+}
+.paper-tab:hover .paper-tab-section { opacity: 0.7; }
+.paper-tab.current .paper-tab-section { opacity: 0.6; color: #c4bfb0; }
+
+/* Nudge newspaper right on desktop */
 @media (min-width: 901px) {
-    body { padding-left: 36px; }
+    body { padding-left: 60px; }
 }
 
-/* ═══ MOBILE: Bottom paper strip ═══ */
+/* ─── Mobile: bottom horizontal strip ─── */
 @media (max-width: 900px) {
     .paper-stack {
         position: fixed;
-        left: 0; right: 0;
+        left: 0;
+        right: 0;
         top: auto;
         bottom: 0;
         transform: none;
         flex-direction: row;
         padding: 0;
-        background: #ece7dc;
+        background: #f0ebe0;
         border-top: 2px solid #1a1a18;
         z-index: 300;
-        gap: 0;
         overflow-x: auto;
         scrollbar-width: none;
+        gap: 0;
     }
     .paper-stack::-webkit-scrollbar { display: none; }
-
-    body {
-        padding-left: 0 !important;
-        padding-bottom: 52px;
-    }
-
-    .paper-page {
+    
+    body { padding-bottom: 50px; }
+    
+    .paper-tab {
         width: auto !important;
-        height: 48px;
+        height: 44px;
+        padding: 6px 14px;
         border: none;
-        border-right: 1px solid rgba(175,170,158,0.4);
+        border-right: 1px solid #c4bfb0;
         border-radius: 0;
-        transform: none !important;
-        margin-left: 0 !important;
-        padding: 0 14px;
         flex-shrink: 0;
+        gap: 6px;
         flex-direction: column;
         justify-content: center;
-        gap: 3px;
-        background: var(--pc, #ece7dc);
     }
-    .paper-page:hover {
-        width: auto !important;
-        transform: none !important;
-        box-shadow: none;
-    }
-    .paper-page::before { display: none; }
-
-    .paper-page.current {
-        width: auto !important;
-        transform: none !important;
-        background: #1a1a18;
-    }
-
-    .paper-page-title {
+    .paper-tab:hover { box-shadow: none; }
+    .paper-tab.child { margin-left: 0; height: 44px; }
+    
+    .paper-tab-label {
         font-size: 7px;
         font-family: 'JetBrains Mono', monospace;
         font-weight: 500;
-        letter-spacing: 0.8px;
+        letter-spacing: 1px;
         text-transform: uppercase;
         opacity: 1;
     }
-    .paper-page.current .paper-page-title { color: #f0ebe0; }
-    .paper-page-icon { font-size: 14px; }
+    .paper-tab-icon { font-size: 14px; }
+    .paper-tab-section { display: none; }
 
-    .paper-page.child { display: none; }
-
-    .paper-stack:hover .paper-page:not(:hover):not(.current) {
-        transform: none !important;
+    .paper-tab.current {
+        width: auto !important;
+        background: #1a1a18;
     }
+    .paper-tab.current .paper-tab-label { color: #f0ebe0; }
+    
+    /* Shift chrono bar up above mobile nav */
+    .chrono-bar { bottom: 50px; }
 }
