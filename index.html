@@ -124,78 +124,9 @@
             50% { left: 140%; }
         }
 
-        /* ── Ink flow background ── */
-        #ink-bg {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* ── 3D tilt ── */
+        /* Newspaper lift on scroll — subtle shadow enhancement */
         .newspaper {
-            transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
-            transform-style: preserve-3d;
-            will-change: transform, box-shadow;
-        }
-
-        /* Paper fold crease */
-        .newspaper::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 50%;
-            width: 1px; height: 100%;
-            background: linear-gradient(to bottom,
-                transparent 0%, rgba(0,0,0,0.02) 8%,
-                rgba(0,0,0,0.04) 50%,
-                rgba(0,0,0,0.02) 92%, transparent 100%);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* ── Lamp toggle ── */
-        .lamp-toggle {
-            position: absolute;
-            top: 8px; right: 12px;
-            z-index: 10;
-            background: none;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            padding: 3px 5px;
-            font-size: 14px;
-            cursor: pointer;
-            opacity: 0.25;
-            transition: opacity 0.3s, border-color 0.3s, transform 0.2s;
-            line-height: 1;
-        }
-        .lamp-toggle:hover {
-            opacity: 0.65;
-            border-color: rgba(0,0,0,0.06);
-            transform: scale(1.1);
-        }
-        body.lamp .lamp-toggle { opacity: 1; }
-
-        /* ── Lamp overlay ── */
-        .lamp-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.7s;
-            background: radial-gradient(
-                circle 200px at var(--lx, 50%) var(--ly, 50%),
-                rgba(255,248,230,0.04) 0%, transparent 28%,
-                rgba(5,3,0,0.65) 50%, rgba(5,3,0,0.97) 100%);
-        }
-        body.lamp .lamp-overlay { opacity: 1; }
-        body.lamp { background: #060400 !important; }
-        body.lamp #ink-bg { opacity: 0.1; }
-        body.lamp .newspaper {
-            background: #f4ece0;
-            box-shadow: 0 0 0 1px rgba(196,191,176,0.2),
-                        0 0 80px rgba(255,200,100,0.05),
-                        0 4px 40px rgba(0,0,0,0.5);
+            transition: box-shadow 0.4s ease;
         }
     </style>
     <link rel="stylesheet" href="/css/nav-stack.css">
@@ -217,12 +148,7 @@
 <noscript><style>#intro{display:none!important}</style></noscript>
 <!-- ════ END INTRO ════ -->
 
-<canvas id="ink-bg" aria-hidden="true"></canvas>
-<div class="lamp-overlay" aria-hidden="true"></div>
-
 <div class="newspaper">
-
-<button class="lamp-toggle" title="Reading lamp">🕯️</button>
 
 <div class="preprint-banner">
     📄 NEW PREPRINT — <a href="/preprint/">Heterogeneity Blindness in ALS Clinical Trials</a> · 6 experiments · 14,650 trials · <a href="/preprint.pdf">PDF</a>
@@ -384,94 +310,6 @@
 <script src="/js/intro.js"></script>
 <script src="/js/nav-stack.js"></script>
 <script>
-// ── Ink flow background ──
-(function(){
-  var c = document.getElementById('ink-bg');
-  if (!c || window.innerWidth < 768) return;
-  var ctx = c.getContext('2d'), W, H, t = 0;
-  var N = 110, pts = [];
-  var bg = '#d5cebb';
-  var cols = [
-    'rgba(155,148,130,',  // neutral
-    'rgba(100,140,170,',  // blue hint
-    'rgba(175,150,85,',   // amber hint
-    'rgba(168,100,90,',   // red hint
-  ];
-
-  function resize() {
-    W = c.width = window.innerWidth;
-    H = c.height = window.innerHeight;
-    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-  }
-
-  function ang(x, y) {
-    return Math.sin(x*0.003 + t) * 1.5
-         + Math.cos(y*0.0035 - t*0.7) * 1.2
-         + Math.sin((x+y)*0.002 + t*0.5) * 0.9
-         + Math.cos(x*0.001 - y*0.002 + t*0.3) * 0.7;
-  }
-
-  resize();
-  for (var i = 0; i < N; i++)
-    pts.push({ x: Math.random()*W, y: Math.random()*H, ci: i < N*0.4 ? 0 : i < N*0.75 ? 1 : 2 });
-  window.addEventListener('resize', resize);
-
-  function draw() {
-    ctx.globalAlpha = 0.01;
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
-    ctx.globalAlpha = 1;
-    t += 0.003;
-    ctx.lineWidth = 0.8;
-    for (var i = 0; i < N; i++) {
-      var p = pts[i], a = ang(p.x, p.y);
-      var nx = p.x + Math.cos(a)*1.2, ny = p.y + Math.sin(a)*1.2;
-      var ci = (i % 8 < 2) ? p.ci + 1 : 0;
-      ctx.strokeStyle = cols[ci] + '0.035)';
-      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(nx, ny); ctx.stroke();
-      p.x = nx; p.y = ny;
-      if (nx<-5||nx>W+5||ny<-5||ny>H+5||Math.random()<0.002) {
-        p.x = Math.random()*W; p.y = Math.random()*H;
-      }
-    }
-    requestAnimationFrame(draw);
-  }
-
-  // Start once intro is dismissed
-  var check = setInterval(function(){
-    if (!document.getElementById('intro')) { clearInterval(check); draw(); }
-  }, 500);
-  // Fallback: start after 45s regardless
-  setTimeout(function(){ clearInterval(check); draw(); }, 45000);
-})();
-
-// ── Mouse tracking ──
-document.addEventListener('mousemove', function(e) {
-  document.documentElement.style.setProperty('--lx', e.clientX + 'px');
-  document.documentElement.style.setProperty('--ly', e.clientY + 'px');
-});
-
-// ── 3D tilt + dynamic shadow (desktop) ──
-(function(){
-  var p = document.querySelector('.newspaper');
-  if (!p || !window.matchMedia('(hover:hover)').matches) return;
-  p.addEventListener('mousemove', function(e) {
-    var r = p.getBoundingClientRect();
-    var x = (e.clientX - r.left)/r.width - 0.5;
-    var y = (e.clientY - r.top)/r.height - 0.5;
-    p.style.transform = 'perspective(1500px) rotateY('+(x*0.8)+'deg) rotateX('+(-y*0.6)+'deg)';
-    p.style.boxShadow = '0 0 0 1px #c4bfb0,'+(-x*12)+'px '+(-y*10+4)+'px 24px rgba(0,0,0,0.17), 0 0 60px rgba(0,0,0,0.05)';
-  });
-  p.addEventListener('mouseleave', function(){ p.style.transform=''; p.style.boxShadow=''; });
-})();
-
-// ── Lamp mode ──
-(function(){
-  var btn = document.querySelector('.lamp-toggle');
-  if (!btn) return;
-  btn.addEventListener('click', function(e){ e.stopPropagation(); document.body.classList.toggle('lamp'); });
-})();
-
 // Scroll-reveal — adds .reveal to sections, .vis on intersection
 (function(){
   var sels = '.body-grid, .grid-3, .principles-grid, .principles-left, .principles-right, .latest';
