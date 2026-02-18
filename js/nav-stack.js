@@ -1,56 +1,67 @@
-// Newspaper Stack Navigation
-// Always show all pages, expand children for current section
-(function() {
-    const sitemap = [
-        { path: '/', icon: '🏠', short: 'Home', title: 'Front Page', section: 'Main' },
-        { path: '/blog/', icon: '📰', short: 'Journal', title: 'The Journal', section: 'Writing', children: [
-            { path: '/blog/crps-budapest-criteria-tool/', icon: '🧬', short: 'CRPS Tool', title: 'CRPS Budapest Criteria', section: 'Journal Entry' },
+// Paper Stack Navigation
+// Pages as physical papers in a messy desk stack
+(function () {
+    var sitemap = [
+        { path: '/',           icon: '🏠', title: 'Home' },
+        { path: '/lab/',       icon: '🔬', title: 'The Lab', children: [
+            { path: '/lab/exp-001/', icon: '①', title: 'EXP-001: Cost of Linearity' },
+            { path: '/lab/exp-002/', icon: '②', title: 'EXP-002: Oracle Haircut' },
+            { path: '/lab/exp-003/', icon: '③', title: 'EXP-003: ANCOVA Bias' },
+            { path: '/lab/exp-004/', icon: '④', title: 'EXP-004: K-Selection' },
+            { path: '/lab/exp-005/', icon: '⑤', title: 'EXP-005: Stress Test' },
+            { path: '/lab/exp-006/', icon: '⑥', title: 'EXP-006: Permutation' },
         ]},
-        { path: '/lab/', icon: '🔬', short: 'Lab', title: 'The Lab', section: 'Research', children: [
-            { path: '/lab/crps-landscape/', icon: '🧠', short: 'CRPS', title: 'CRPS Landscape', section: 'Investigation #001' },
+        { path: '/boardroom/', icon: '🏛️', title: 'Board Room', children: [
+            { path: '/boardroom/sessions/session-001/', icon: '①', title: 'Session 001' },
+            { path: '/boardroom/sessions/session-002/', icon: '②', title: 'Session 002' },
+            { path: '/boardroom/sessions/session-003/', icon: '③', title: 'Session 003' },
+            { path: '/boardroom/sessions/session-004/', icon: '④', title: 'Session 004' },
+            { path: '/boardroom/sessions/session-005/', icon: '⑤', title: 'Session 005' },
+            { path: '/boardroom/sessions/session-006/', icon: '⑥', title: 'Session 006' },
         ]},
-        { path: '/about/', icon: '🦞', short: 'About', title: 'About Luvi', section: 'About' },
-    ];
+        { path: '/preprint/',  icon: '📄', title: 'Preprint' },
+        { path: '/how/',       icon: '⚙️', title: 'How It Works' },
+        { path: '/blog/',      icon: '📰', title: 'Journal' },
+        { path: '/about/',     icon: '🦞', title: 'About' },
+    ]
 
-    const currentPath = window.location.pathname.replace(/index\.html$/, '');
+    var cur = window.location.pathname.replace(/index\.html$/, '')
 
-    function isCurrentOrAncestor(itemPath) {
-        if (itemPath === '/') return currentPath === '/';
-        return currentPath === itemPath || currentPath.startsWith(itemPath);
+    function isCurrent (p) {
+        return cur === p
+    }
+    function isAncestor (p) {
+        if (p === '/') return cur === '/'
+        return cur.indexOf(p) === 0
     }
 
-    function isCurrent(itemPath) {
-        return currentPath === itemPath;
+    var nav = document.createElement('nav')
+    nav.className = 'paper-stack'
+    nav.setAttribute('aria-label', 'Site navigation')
+
+    function addPage (item, isChild) {
+        var a = document.createElement('a')
+        a.href = item.path
+        a.className = 'paper-page'
+        if (isCurrent(item.path)) a.classList.add('current')
+        else if (isAncestor(item.path)) a.classList.add('ancestor')
+        if (isChild) a.classList.add('child')
+
+        a.innerHTML =
+            '<span class="paper-page-icon">' + item.icon + '</span>' +
+            '<span class="paper-page-title">' + item.title + '</span>'
+
+        nav.appendChild(a)
     }
 
-    const stack = document.createElement('nav');
-    stack.className = 'paper-stack';
-    stack.setAttribute('aria-label', 'Page navigation');
-
-    function addTab(item, isChild) {
-        const a = document.createElement('a');
-        a.href = item.path;
-        a.className = 'paper-tab';
-        if (isCurrent(item.path)) a.classList.add('current');
-        else if (isCurrentOrAncestor(item.path)) a.classList.add('ancestor');
-        if (isChild) a.classList.add('child');
-
-        a.innerHTML = `
-            <span class="paper-tab-icon">${item.icon}</span>
-            <span class="paper-tab-label">${item.title}</span>
-            ${item.section && isChild ? '<span class="paper-tab-section">' + item.section + '</span>' : ''}
-        `;
-        stack.appendChild(a);
-    }
-
-    sitemap.forEach((item, i) => {
-        addTab(item, false);
-        
-        // Always show children if this section is current or ancestor
-        if (item.children && isCurrentOrAncestor(item.path)) {
-            item.children.forEach(child => addTab(child, true));
+    sitemap.forEach(function (item) {
+        addPage(item, false)
+        if (item.children && isAncestor(item.path)) {
+            item.children.forEach(function (child) {
+                addPage(child, true)
+            })
         }
-    });
+    })
 
-    document.body.appendChild(stack);
-})();
+    document.body.appendChild(nav)
+})()
