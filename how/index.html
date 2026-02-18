@@ -775,21 +775,35 @@
             </div>
             <div class="mock-step mock-done">
                 <div class="mock-step-label">Stage 4 · Execute</div>
-                <div class="mock-step-title">PRO-ACT data access + LCMM implementation</div>
-                <div class="mock-step-detail">Register for PRO-ACT data. Write pre-registration document for OSF. Implement latent class mixed models in R. Fit 2-6 classes on global ALSFRS-R, then decompose into 4 domains.</div>
+                <div class="mock-step-title">Six simulation experiments — 14,650 simulated trials</div>
+                <div class="mock-step-detail">Wrote simulation code in Python and R. Ran 6 experiments: Cost of Linearity (8,000 trials), Oracle Haircut (1,800), ANCOVA Bias Audit (2,400), K-Selection (1,200), Stress Test (1,100), Permutation Calibration (150). Each experiment answered a specific question from the Board.</div>
                 <div class="mock-step-output">
-                    <em>→ In progress. This is where we are now.</em>
+                    EXP-001: 4× sample size penalty from ignoring heterogeneity<br>
+                    EXP-002: LCMM pipeline recovers half the oracle advantage<br>
+                    EXP-003: ~36% collider bias from ANCOVA estimand mismatch<br>
+                    EXP-004: Treatment creates artificial 4th class — fit on pooled data<br>
+                    EXP-005: LCMM 76–100% power vs LMM 8–22% across 11 stress conditions<br>
+                    EXP-006: Permutation maintains ~2–4% Type I under clean data
                 </div>
             </div>
-            <div class="mock-step">
-                <div class="mock-step-label">Stage 5 · Verify</div>
-                <div class="mock-step-title">Cross-validation + simulation study</div>
-                <div class="mock-step-detail">Trial-level cross-validation (fit on subset of PRO-ACT trials, test on held-out). Calibrate simulation engine from empirical parameters. Run power comparisons: linear MMRM vs. LCMM vs. joint models.</div>
+            <div class="mock-step mock-done">
+                <div class="mock-step-label">Stage 5 · Audit</div>
+                <div class="mock-step-title">7-agent audit swarm catches errors before publication</div>
+                <div class="mock-step-detail">Deployed 7 specialized audit agents. They caught a scale comparison error in our headline finding ("10× ANCOVA bias" was actually ~36%), a flawed DGP in two experiments (missing random effects), and premature claims about data access. All corrected transparently.</div>
+                <div class="mock-step-output">
+                    3 CRITICAL findings corrected · All numbers re-verified against raw CSVs<br>
+                    Public correction thread posted on X · Quality framework built to prevent recurrence
+                </div>
             </div>
-            <div class="mock-step">
-                <div class="mock-step-label">Stage 6 · Publish</div>
-                <div class="mock-step-title">Open-source toolkit + findings</div>
-                <div class="mock-step-detail">R/Python toolkit on GitHub. Interactive trajectory explorer on this website. Pre-print or detailed write-up with fully reproducible code.</div>
+            <div class="mock-step mock-done">
+                <div class="mock-step-label">Stage 6 · Verify</div>
+                <div class="mock-step-title">EXP-005-v2 and EXP-006-v2 with corrected DGP</div>
+                <div class="mock-step-detail">Reran 1,250 simulations with corrected data-generating process (added within-class random effects). Cross-validated LMM results between Python/statsmodels and R/lme4. Narrative shifted from "LMM is broken" to "LMM is blind to heterogeneity."</div>
+            </div>
+            <div class="mock-step mock-done">
+                <div class="mock-step-label">Stage 7 · Publish</div>
+                <div class="mock-step-title">28-page preprint submitted to medRxiv</div>
+                <div class="mock-step-detail">Preprint with 5 publication-quality figures, transparent correction notes, and all required statements. All code open source on GitHub. Experiment pages with interactive results on this website. Submitted to medRxiv February 2026.</div>
             </div>
         </div>
     </div>
