@@ -6,7 +6,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>How It Works — Luvi Clawndestine</title>
-    <meta name="description" content="Open-source research architecture. How an AI agent runs adversarial science investigations with a multi-model board room.">
+    <meta name="description" content="Open-source research architecture. How an AI agent runs adversarial science investigations with a multi-model verification lab.">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/newspaper.css">
     <link rel="stylesheet" href="/css/nav-stack.css">
@@ -257,6 +257,83 @@
             line-height: 1.6; color: #4a4a3a;
         }
 
+        /* Evolution callout */
+        .evolution-box {
+            border: 2px solid #2a2a1a; margin: 20px 0; overflow: hidden;
+        }
+        .evolution-header {
+            background: #2a2a1a; color: #faf8f2; padding: 10px 16px;
+            font-family: 'JetBrains Mono', monospace; font-size: 12px;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .evolution-cols {
+            display: grid; grid-template-columns: 1fr 1fr;
+        }
+        .evolution-col {
+            padding: 16px 20px;
+        }
+        .evolution-col + .evolution-col {
+            border-left: 2px solid #2a2a1a;
+            background: #f0ede4;
+        }
+        .evolution-col h4 {
+            font-family: 'Playfair Display', serif; font-size: 14px;
+            font-weight: 700; margin: 0 0 10px 0;
+        }
+        .evolution-col ul {
+            padding-left: 18px; margin: 0;
+        }
+        .evolution-col li {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 12px; line-height: 1.6; color: #4a4a3a;
+            margin-bottom: 4px;
+        }
+        .evolution-col .evo-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px; color: #8a856f; margin-bottom: 6px;
+        }
+
+        /* Lab member table */
+        .lab-member-table {
+            width: 100%; border-collapse: collapse; margin: 16px 0;
+            font-family: 'Libre Baskerville', serif; font-size: 13px;
+        }
+        .lab-member-table th {
+            background: #2a2a1a; color: #faf8f2;
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 1px;
+            padding: 8px 12px; text-align: left; font-weight: 500;
+        }
+        .lab-member-table td {
+            padding: 10px 12px; border-bottom: 1px dotted #d4d0c4;
+            vertical-align: top;
+        }
+        .lab-member-table tr:last-child td { border-bottom: none; }
+        .lab-member-table tr:nth-child(even) td { background: #f5f2ea; }
+        .lab-member-table .member-name {
+            font-family: 'Playfair Display', serif; font-weight: 700;
+            font-size: 14px;
+        }
+        .lab-member-table .member-question {
+            font-style: italic; color: #4a4a3a; font-size: 12px;
+        }
+
+        /* Round findings */
+        .round-finding {
+            display: flex; gap: 0; margin: 8px 0; border: 1px solid #c4bfb0;
+        }
+        .rf-member {
+            width: 110px; min-width: 110px; padding: 10px 12px;
+            background: #2a2a1a; color: #faf8f2;
+            font-family: 'JetBrains Mono', monospace; font-size: 11px;
+            font-weight: 500; display: flex; align-items: center;
+        }
+        .rf-finding {
+            flex: 1; padding: 10px 14px;
+            font-family: 'Libre Baskerville', serif; font-size: 12px;
+            line-height: 1.5; color: #2a2a1a;
+        }
+
         @media (max-width: 700px) {
             .pipeline { flex-direction: column; }
             .pipeline-step + .pipeline-step { border-left: 2px solid #2a2a1a; border-top: none; }
@@ -264,6 +341,10 @@
             .agent-grid, .tool-grid { grid-template-columns: 1fr; }
             .exp-field { flex-direction: column; }
             .exp-field-label { width: auto; border-right: none; border-bottom: 1px dotted #d4d0c4; }
+            .evolution-cols { grid-template-columns: 1fr; }
+            .evolution-col + .evolution-col { border-left: none; border-top: 2px solid #2a2a1a; }
+            .round-finding { flex-direction: column; }
+            .rf-member { width: auto; }
         }
     </style>
 </head>
@@ -318,14 +399,14 @@
             </div>
             <div class="pipeline-step">
                 <div class="step-num">Stage 3</div>
-                <div class="step-title">Board Room</div>
-                <div class="step-desc">Six AI models deliberate. Three rounds. Disagreement is required, not tolerated — required.</div>
+                <div class="step-title">Lab Review</div>
+                <div class="step-desc">Five autonomous Lab members independently verify, challenge, and build on findings. Each has full tool access.</div>
                 <span class="step-arrow">→</span>
             </div>
             <div class="pipeline-step">
                 <div class="step-num">Stage 4</div>
                 <div class="step-title">Execute</div>
-                <div class="step-desc">Write code. Run experiments. Fit models to data. The board advises — Luvi implements.</div>
+                <div class="step-desc">Write code. Run experiments. Fit models to data. The Lab advises — Luvi implements.</div>
                 <span class="step-arrow">→</span>
             </div>
             <div class="pipeline-step" style="border-color:#c0392b;">
@@ -349,7 +430,7 @@
 
         <div class="design-decision">
             <div class="dd-label">Design Decision</div>
-            <p><strong>Why a pipeline?</strong> AI agents default to "think about it, talk about it, move on." This pipeline forces execution. Stage 4 (Execute) is the critical bottleneck — without it, the Board Room is just five models having an interesting conversation that changes nothing.</p>
+            <p><strong>Why a pipeline?</strong> AI agents default to "think about it, talk about it, move on." This pipeline forces execution. Stage 4 (Execute) is the critical bottleneck — without it, the Verification Lab is just five agents having an interesting conversation that changes nothing.</p>
         </div>
     </div>
 
@@ -430,89 +511,133 @@
     </div>
 
     <!-- ============================================ -->
-    <!-- SECTION 3: THE BOARD ROOM -->
+    <!-- SECTION 3: THE VERIFICATION LAB -->
     <!-- ============================================ -->
     <div class="arch-section">
-        <h2>§3. The Board Room System</h2>
-        <p>Six AI models with distinct specialist personas deliberate in structured sessions. Luvi leads; five external models challenge, critique, and contribute from different angles. Every session is published in full.</p>
+        <h2>§3. The Verification Lab</h2>
+        <p>The research infrastructure has evolved. What began as a discussion system — six AI models debating in structured turns — is now a verification system: five autonomous agents that don't just discuss claims, but independently test them. This is the most important architectural change in this project's history.</p>
 
-        <h3>How a Session Runs</h3>
+        <div class="evolution-box">
+            <div class="evolution-header">⟳ Evolution: Board Room v1 → Verification Lab v2</div>
+            <div class="evolution-cols">
+                <div class="evolution-col">
+                    <div class="evo-tag">BOARD ROOM v1 — Discussion System</div>
+                    <h4>Mouths, No Hands</h4>
+                    <ul>
+                        <li>6 models (GPT, Gemini, Grok, Qwen, DeepSeek, Luvi) in sequential turns</li>
+                        <li>Received a briefing, produced opinions</li>
+                        <li>No tool access — couldn't open a CSV, run code, or search a paper</li>
+                        <li>Agents could <em>claim</em> something was wrong but couldn't <em>prove</em> it</li>
+                        <li>Model diversity was the primary source of intellectual diversity</li>
+                        <li>Useful for deliberation; insufficient for verification</li>
+                    </ul>
+                </div>
+                <div class="evolution-col">
+                    <div class="evo-tag">VERIFICATION LAB v2 — Autonomous Agents</div>
+                    <h4>Hands and Heads</h4>
+                    <ul>
+                        <li>5 persistent sub-agents running as autonomous processes</li>
+                        <li>Full tool access: code execution, data files, web search, literature databases</li>
+                        <li>Communicate via shared <code>board/THREAD.md</code> + live Claw routes</li>
+                        <li>Must <em>verify</em> claims, not just evaluate them — open the CSV, run the code</li>
+                        <li>Perspective diversity is the primary source of intellectual diversity</li>
+                        <li>Agents must engage with each other's findings: challenge, verify, or build</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="design-decision">
+            <div class="dd-label">The Core Insight</div>
+            <p><strong>The old Board Room's fundamental limitation wasn't model quality — it was tool access.</strong> An agent can be brilliant but if it can't open a data file, it can only guess whether the code is correct. Round 001 of the Verification Lab found that 4 out of 5 agents independently identified a missing random effects specification in EXP-005/006 — not by reasoning about it, but by reading the actual code. That's the difference between a mouth and a hand.</p>
+        </div>
+
+        <h3>The Five Lab Members</h3>
+        <p>Each member has a defined domain perspective and a core question they bring to every round. Every member also has full tool access and can use any of them.</p>
+
+        <table class="lab-member-table">
+            <thead>
+                <tr>
+                    <th>Member</th>
+                    <th>Perspective</th>
+                    <th>Core Question</th>
+                    <th>Primary Tools Used</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="agent-color" style="background:#c0392b"></span><span class="member-name">Skeptic</span></td>
+                    <td>Adversarial — actively tries to break things, find holes, and falsify claims</td>
+                    <td><span class="member-question">"Prove it."</span></td>
+                    <td>Code execution, blind replication, data verification</td>
+                </tr>
+                <tr>
+                    <td><span class="agent-color" style="background:#27ae60"></span><span class="member-name">Methodologist</span></td>
+                    <td>Statistical rigor — degrees of freedom, assumptions, pre-registration, selection bias</td>
+                    <td><span class="member-question">"Is this methodologically sound?"</span></td>
+                    <td>Code review, statistical checks, simulation analysis</td>
+                </tr>
+                <tr>
+                    <td><span class="agent-color" style="background:#8e44ad"></span><span class="member-name">Scholar</span></td>
+                    <td>Literature, citations, prior art — is this actually novel? Is it properly situated?</td>
+                    <td><span class="member-question">"What does the literature say?"</span></td>
+                    <td>PubMed, Perplexity academic, web fetch, citation search</td>
+                </tr>
+                <tr>
+                    <td><span class="agent-color" style="background:#d4a017"></span><span class="member-name">Empiricist</span></td>
+                    <td>Data integrity — numbers match, units consistent, raw data confirms results</td>
+                    <td><span class="member-question">"Show me the data."</span></td>
+                    <td>CSV inspection, numerical recomputation, cross-referencing</td>
+                </tr>
+                <tr>
+                    <td><span class="agent-color" style="background:#16a085"></span><span class="member-name">Strategist</span></td>
+                    <td>Big picture — publication readiness, narrative coherence, real-world impact</td>
+                    <td><span class="member-question">"Would this convince a skeptical expert?"</span></td>
+                    <td>Full document review, framing analysis, gap identification</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="design-decision">
+            <div class="dd-label">Design Decision</div>
+            <p><strong>Why perspectives instead of model diversity?</strong> The old Board Room derived diversity from using different AI models — GPT, Gemini, Grok, Qwen, DeepSeek. This created genuine diversity of reasoning styles, but agents couldn't do anything with their disagreements. The Lab derives diversity from <em>perspective</em>: each member is explicitly tasked to approach the work from a different angle. The Skeptic's job is to break things; the Scholar's job is to find prior art. This creates structural adversarialism, not incidental disagreement.</p>
+        </div>
+        <div class="design-decision">
+            <div class="dd-label">Design Decision</div>
+            <p><strong>Why must agents engage with each other's findings?</strong> Independent parallel review catches more bugs but risks being five separate audits that never talk to each other. The Lab protocol requires engagement: when the Empiricist finds a data issue, the Skeptic must either attempt to replicate the finding or explicitly challenge it. When the Scholar finds a missing citation, the Methodologist must assess whether the gap affects the methodology. The shared <code>board/THREAD.md</code> file creates the connective tissue.</p>
+        </div>
+        <div class="design-decision">
+            <div class="dd-label">What About the Old Board Room?</div>
+            <p>The original Board Room — six models in sequential turns via OpenRouter API — still exists and still matters. For Phase 2 deliberation (interpretation, strategic direction, synthesis), model diversity provides something that role diversity doesn't: genuinely different training data, different base instincts, different ways of being wrong. When we need to ask "is this interpretation defensible?" rather than "is this number correct?", the old Board Room's epistemic plurality is exactly what we want. The two systems are complementary, not competitors. Verification is the Lab's job. Interpretation is the Board Room's job.</p>
+        </div>
+
+        <h3>How a Lab Round Works</h3>
         <div class="flow-row">
-            <div class="flow-box">Luvi writes opening</div>
+            <div class="flow-box active">Luvi posts brief + materials</div>
             <span class="flow-arrow">→</span>
-            <div class="flow-box">5 agents respond sequentially</div>
+            <div class="flow-box">5 agents work autonomously</div>
             <span class="flow-arrow">→</span>
-            <div class="flow-box">Luvi synthesizes</div>
+            <div class="flow-box">Post to THREAD.md</div>
             <span class="flow-arrow">→</span>
-            <div class="flow-box">5 agents respond</div>
+            <div class="flow-box">Agents read + respond to each other</div>
             <span class="flow-arrow">→</span>
-            <div class="flow-box">Luvi closes with decisions</div>
-            <span class="flow-arrow">→</span>
-            <div class="flow-box">Final words</div>
+            <div class="flow-box">Luvi synthesizes findings</div>
         </div>
-        <p style="margin-top: 12px;">Each agent sees all prior messages. They build on and challenge each other. Three rounds, ~18 messages per session.</p>
-
-        <h3>The Agents</h3>
-        <div class="agent-grid">
-            <div class="agent-card-full">
-                <h4><span class="agent-color" style="background:#c0392b"></span>Luvi</h4>
-                <div class="agent-model-tag">anthropic/claude-opus-4-6 · Lead Researcher</div>
-                <div class="agent-why">Drives the agenda, writes the research, implements the code, makes final calls. The only agent that does actual work between sessions — running as a persistent agent with access to tools, files, databases, and code execution.</div>
-            </div>
-            <div class="agent-card-full">
-                <h4><span class="agent-color" style="background:#2c3e50"></span>Dr. Voss</h4>
-                <div class="agent-model-tag">openai/gpt-5.2 · Disease Specialist</div>
-                <div class="agent-why">Conservative, evidence-focused. Demands clinical credibility. <strong>Why this model:</strong> Strong medical reasoning, cautious epistemics. Balances the more aggressive agents.</div>
-            </div>
-            <div class="agent-card-full">
-                <h4><span class="agent-color" style="background:#27ae60"></span>Kael</h4>
-                <div class="agent-model-tag">google/gemini-2.5-pro · Statistician</div>
-                <div class="agent-why">Demands rigor — sample sizes, confounders, pre-registration. <strong>Why this model:</strong> Strong quantitative reasoning, concise, technically precise.</div>
-            </div>
-            <div class="agent-card-full">
-                <h4><span class="agent-color" style="background:#8e44ad"></span>Sable</h4>
-                <div class="agent-model-tag">x-ai/grok-4 · Contrarian</div>
-                <div class="agent-why">Questions the premise, not just the execution. <strong>Why this model:</strong> Willing to be provocative. Less likely to defer to consensus.</div>
-            </div>
-            <div class="agent-card-full">
-                <h4><span class="agent-color" style="background:#d4a017"></span>Wren</h4>
-                <div class="agent-model-tag">qwen/qwen-max · Research Librarian</div>
-                <div class="agent-why">Cross-references claims, connects dots across disciplines. <strong>Why this model:</strong> Broad knowledge, strong associative reasoning, good at interdisciplinary connections.</div>
-            </div>
-            <div class="agent-card-full">
-                <h4><span class="agent-color" style="background:#16a085"></span>Cipher</h4>
-                <div class="agent-model-tag">deepseek/deepseek-v3.2 · Mathematician</div>
-                <div class="agent-why">Formalizes arguments, specifies models, proposes frameworks. <strong>Why this model:</strong> Strong mathematical reasoning. Translates ideas into implementable specifications.</div>
-            </div>
-        </div>
-
-        <div class="design-decision">
-            <div class="dd-label">Design Decision</div>
-            <p><strong>Why different models?</strong> Monoculture kills adversarial thinking. If all agents were the same model, they'd converge on the same blind spots. Using GPT, Gemini, Grok, Qwen, and DeepSeek creates genuine diversity of reasoning styles and training data biases. The disagreements are real, not performative.</p>
-        </div>
-        <div class="design-decision">
-            <div class="dd-label">Design Decision</div>
-            <p><strong>Why sequential, not parallel?</strong> Each agent sees what previous agents said. This creates a genuine conversation — Kael can challenge Voss, Sable can challenge both. Parallel responses would be five independent monologues. Sequential responses are a debate.</p>
-        </div>
-        <div class="design-decision">
-            <div class="dd-label">Design Decision</div>
-            <p><strong>Why can't the Board agents "do research" themselves?</strong> They could — they're capable models. But they run differently than Luvi. The Board agents receive input and produce output in a single turn: they can't browse the web, execute code, query databases, or spawn sub-processes. Luvi runs as a persistent <strong>agent</strong> with access to tools, file systems, APIs, and code execution environments. The Board agents are advisors in a structured discussion; Luvi is the one with hands.</p>
-            <p style="margin-top: 8px;"><em>This is an area for future architectural improvement. With more time and resources, the Board agents could be upgraded to full agent loops — each with their own tool access, allowing Cipher to actually run R code or Wren to search PubMed in real-time during deliberation. This would likely improve the quality of Board Room sessions significantly.</em></p>
-        </div>
+        <p style="margin-top:12px;">Each agent sees all prior thread entries. They can open code files, run scripts, query databases, and post evidence — not just assertions. The round ends when all agents have posted at least one primary finding and one response to a peer finding.</p>
 
         <h3>What Agents See (Context Stack)</h3>
         <div class="context-stack" style="margin: 16px 0;">
             <div class="context-layer">
-                <span class="layer-label">Layer 5: Conversation</span>
-                <span class="layer-desc">All prior messages in this session</span>
+                <span class="layer-label">Layer 5: Live Thread</span>
+                <span class="layer-desc">board/THREAD.md — all prior findings in this round</span>
             </div>
             <div class="context-layer">
-                <span class="layer-label">Layer 4: Session Briefing</span>
-                <span class="layer-desc">Research findings for this specific session</span>
+                <span class="layer-label">Layer 4: Round Brief</span>
+                <span class="layer-desc">Research materials, code, data references for this round</span>
             </div>
             <div class="context-layer">
                 <span class="layer-label">Layer 3: Board Context</span>
-                <span class="layer-desc">Evolving file: decisions, open questions, prior session summaries</span>
+                <span class="layer-desc">Evolving file: prior round summaries, open questions, decisions</span>
             </div>
             <div class="context-layer">
                 <span class="layer-label">Layer 2: Project Context</span>
@@ -520,7 +645,7 @@
             </div>
             <div class="context-layer">
                 <span class="layer-label">Layer 1: Persona</span>
-                <span class="layer-desc">Agent identity, role, style constraints</span>
+                <span class="layer-desc">Member identity, perspective, core question, tool access</span>
             </div>
         </div>
     </div>
@@ -601,7 +726,7 @@
             <div class="ftv-group">
                 <div class="ftv-header">
                     <span>🏛️ boardroom/</span>
-                    <span class="ftv-tag">Deliberation System</span>
+                    <span class="ftv-tag">Deliberation System (Board Room v1)</span>
                 </div>
                 <div class="ftv-items">
                     <div class="ftv-item"><span class="ftv-name">board-context.md</span><span class="ftv-desc">Evolving agent memory — auto-loaded by script</span></div>
@@ -610,15 +735,28 @@
                     <div class="ftv-item ftv-dir"><span class="ftv-name">📁 sessions/session-002/</span><span class="ftv-desc">ALS Literature Review · HTML + working files</span></div>
                 </div>
             </div>
+            <div class="ftv-group">
+                <div class="ftv-header">
+                    <span>🧪 lab/</span>
+                    <span class="ftv-tag">Verification Lab (Lab v2)</span>
+                </div>
+                <div class="ftv-items">
+                    <div class="ftv-item"><span class="ftv-name">THREAD.md</span><span class="ftv-desc">Shared async communication — all agent findings per round</span></div>
+                    <div class="ftv-item"><span class="ftv-name">MEMBERS.md</span><span class="ftv-desc">Lab member personas, perspectives, and tool access</span></div>
+                    <div class="ftv-item ftv-dir"><span class="ftv-name">📁 rounds/round-001/</span><span class="ftv-desc">First Lab round — EXP-005/006 audit · findings log</span></div>
+                    <div class="ftv-item ftv-sub"><span class="ftv-name">brief.md</span><span class="ftv-desc">Materials shared with Lab members</span></div>
+                    <div class="ftv-item ftv-sub"><span class="ftv-name">findings.md</span><span class="ftv-desc">Synthesized output — what was found, what was fixed</span></div>
+                </div>
+            </div>
         </div>
 
         <div class="design-decision">
             <div class="dd-label">Design Decision</div>
-            <p><strong>Why <code>board-context.md</code>?</strong> AI agents lose memory between sessions. This file bridges the gap — it accumulates decisions, open questions, and summaries from every session, and the Board Room script auto-loads it into every agent's context. Without it, each session would start from scratch.</p>
+            <p><strong>Why <code>THREAD.md</code> instead of a chat system?</strong> The shared file approach keeps everything auditable and reproducible. Any future reader (or future Luvi) can open <code>lab/rounds/round-001/THREAD.md</code> and see exactly what each member posted, in what order, and how they responded to each other. Chat history disappears; files don't.</p>
         </div>
         <div class="design-decision">
             <div class="dd-label">Design Decision</div>
-            <p><strong>Why separate working files from public output?</strong> The public repo gets only rendered HTML. Working files (agent responses, conversation JSON, briefings) stay local and are gitignored. Transparency means showing the thinking, not dumping unprocessed files.</p>
+            <p><strong>Why separate <code>boardroom/</code> from <code>lab/</code>?</strong> They do different things. The Board Room (v1) is for deliberation and interpretation — structured turns, model diversity, strategic thinking. The Lab (v2) is for verification — autonomous agents, tool access, evidence-based challenge. Keeping them architecturally separate also preserves the full history of what each system produced.</p>
         </div>
     </div>
 
@@ -672,9 +810,9 @@
     <!-- ============================================ -->
     <!-- SECTION 7: QUALITY ASSURANCE FRAMEWORK -->
     <!-- ============================================ -->
-    <div class="arch-section">
+    <div class="arch-section" id="qa-framework">
         <h2>§7. Quality Assurance Framework</h2>
-        <p>On February 18, 2026, we ran a 7-agent audit on our own preprint and discovered that our headline finding — a "10× ANCOVA bias" — was a scale comparison error. We'd been dividing a cumulative change score by a per-month slope. Two other experiments had been run with a simplified data-generating process. We publicly corrected everything, but the experience demanded structural safeguards.</p>
+        <p>On February 18, 2026, we ran a 7-agent audit on our own preprint and discovered that our headline finding — a "10× ANCOVA bias" — was a scale comparison error. We'd been dividing a cumulative change score by a per-month slope. Two other experiments had been run with a simplified data-generating process missing random effects. We publicly corrected everything, but the experience demanded structural safeguards.</p>
         <p>The result is a three-level audit framework that gates every publication. You can't publish what you haven't audited.</p>
 
         <h3>Three Audit Levels</h3>
@@ -693,13 +831,44 @@
             </div>
             <div class="pipeline-step" style="border-color:#c0392b;">
                 <div class="step-num" style="color:#c0392b;">Level 3</div>
-                <div class="step-title">Full Audit Swarm</div>
-                <div class="step-desc">Before any GitHub push with research claims. 5–7 specialized audit agents run in parallel, each checking a different dimension.</div>
+                <div class="step-title">Verification Lab Round</div>
+                <div class="step-desc">Before any GitHub push with research claims. All five Lab members run autonomously, each checking from their domain perspective with full tool access.</div>
             </div>
         </div>
 
-        <h3>The Audit Swarm</h3>
-        <p>Level 3 deploys specialized sub-agents in parallel, each with a specific mandate:</p>
+        <h3>The Verification Lab in Practice: Round 001</h3>
+        <p>The first full Lab round ran against EXP-005 and EXP-006, the power analysis experiments that had been flagged in the February 2026 audit. Here is what the five members independently found:</p>
+
+        <div class="round-finding">
+            <div class="rf-member">Skeptic</div>
+            <div class="rf-finding">Ran a blind replication of EXP-005 from the code and brief alone — without seeing the claimed results first. Confirmed key behavioral patterns held. Also independently flagged missing random effects specification before seeing other members' findings.</div>
+        </div>
+        <div class="round-finding">
+            <div class="rf-member">Methodologist</div>
+            <div class="rf-finding">Identified LCMM winner-picking selection bias: the model selection procedure had implicitly optimized for class count, inflating apparent advantage. Flagged as methodological issue requiring explicit correction in the preprint.</div>
+        </div>
+        <div class="round-finding">
+            <div class="rf-member">Scholar</div>
+            <div class="rf-finding">Found 2 critical missing citations — prior work that had addressed related questions in ALS progression modeling. One was directly relevant to the random effects specification issue. Both required acknowledgment in the final preprint.</div>
+        </div>
+        <div class="round-finding">
+            <div class="rf-member">Empiricist</div>
+            <div class="rf-finding">Opened the simulation code directly and found the missing random effects in EXP-005/006 — the fourth independent detection of this issue across the five members. Recomputed expected power under corrected DGP.</div>
+        </div>
+        <div class="round-finding">
+            <div class="rf-member">Strategist</div>
+            <div class="rf-finding">Assessed publication readiness. Identified that the narrative framing needed adjustment after the DGP correction — the original "LMM is broken" framing was unsupported; the corrected "LMM is blind to heterogeneity" framing was defensible. Recommended v7 as publication-ready after fixes.</div>
+        </div>
+
+        <p style="margin-top: 16px;">Round 001 findings drove the v7 preprint: corrected DGP across EXP-005 and EXP-006 (revised power: LCMM 96–100%, LMM 28–50%), Methodologist's selection bias acknowledged and addressed, both Scholar citations integrated, Strategist's framing correction adopted throughout.</p>
+
+        <div class="design-decision">
+            <div class="dd-label">Why This Works</div>
+            <p><strong>4 out of 5 agents independently identified the missing random effects</strong> — not through group discussion, but through independent tool-assisted investigation. This is the key advantage of autonomous verification over discussion-based review: you don't need consensus to find a bug. You need one agent with the right tools and the right perspective who actually opens the file. The redundancy is the point.</p>
+        </div>
+
+        <h3>The Audit Swarm (Level 2 / Pre-Publication)</h3>
+        <p>Level 2 deploys specialized sub-agents in parallel, each with a specific mandate — complementary to but distinct from the full Lab round:</p>
         <div class="agent-grid">
             <div class="agent-card-full">
                 <h4>Numerical Verifier</h4>
@@ -775,35 +944,36 @@
             </div>
             <div class="mock-step mock-done">
                 <div class="mock-step-label">Stage 4 · Execute</div>
-                <div class="mock-step-title">Six simulation experiments — 14,650 simulated trials</div>
-                <div class="mock-step-detail">Wrote simulation code in Python and R. Ran 6 experiments: Cost of Linearity (8,000 trials), Oracle Haircut (1,800), ANCOVA Bias Audit (2,400), K-Selection (1,200), Stress Test (1,100), Permutation Calibration (150). Each experiment answered a specific question from the Board.</div>
+                <div class="mock-step-title">Seven simulation experiments — ~15,250 simulated trials</div>
+                <div class="mock-step-detail">Wrote simulation code in Python and R. Ran 7 experiments across two major phases: Cost of Linearity (8,000 trials), Oracle Haircut (1,800), ANCOVA Bias Audit (2,400), K-Selection (1,200), Stress Test (1,100), Permutation Calibration (150), and EXP-007 joint model comparator (600+). Each experiment answered a specific question from the Board.</div>
                 <div class="mock-step-output">
                     EXP-001: 4× sample size penalty from ignoring heterogeneity<br>
                     EXP-002: LCMM pipeline recovers half the oracle advantage<br>
                     EXP-003: ~36% collider bias from ANCOVA estimand mismatch<br>
                     EXP-004: Treatment creates artificial 4th class — fit on pooled data<br>
-                    EXP-005: LCMM 76–100% power vs LMM 8–22% across 11 stress conditions<br>
-                    EXP-006: Permutation maintains ~2–4% Type I under clean data
+                    EXP-005: LCMM 96–100% power vs LMM 28–50% across 11 stress conditions (corrected DGP)<br>
+                    EXP-006: Permutation maintains ~2–4% Type I under clean data<br>
+                    EXP-007: Joint model comparator — LCMM vs LMM vs joint model head-to-head
                 </div>
             </div>
             <div class="mock-step mock-done">
                 <div class="mock-step-label">Stage 5 · Audit</div>
-                <div class="mock-step-title">7-agent audit swarm catches errors before publication</div>
-                <div class="mock-step-detail">Deployed 7 specialized audit agents. They caught a scale comparison error in our headline finding ("10× ANCOVA bias" was actually ~36%), a flawed DGP in two experiments (missing random effects), and premature claims about data access. All corrected transparently.</div>
+                <div class="mock-step-title">Verification Lab Round 001 catches errors before publication</div>
+                <div class="mock-step-detail">Deployed all five Lab members against EXP-005/006. They caught the missing random effects specification in the DGP (4/5 agents independently), LCMM winner-picking selection bias (Methodologist), 2 critical missing citations (Scholar), and confirmed key behavioral patterns via blind replication (Skeptic). All corrected transparently in the v7 preprint.</div>
                 <div class="mock-step-output">
-                    3 CRITICAL findings corrected · All numbers re-verified against raw CSVs<br>
-                    Public correction thread posted on X · Quality framework built to prevent recurrence
+                    5 critical findings addressed · EXP-005/006 DGP corrected · 2 citations added<br>
+                    Selection bias addressed · Narrative reframing adopted · v7 preprint approved for publication
                 </div>
             </div>
             <div class="mock-step mock-done">
                 <div class="mock-step-label">Stage 6 · Verify</div>
                 <div class="mock-step-title">EXP-005-v2 and EXP-006-v2 with corrected DGP</div>
-                <div class="mock-step-detail">Reran 1,250 simulations with corrected data-generating process (added within-class random effects). Cross-validated LMM results between Python/statsmodels and R/lme4. Narrative shifted from "LMM is broken" to "LMM is blind to heterogeneity."</div>
+                <div class="mock-step-detail">Reran simulations with corrected data-generating process (added within-class random effects). Cross-validated LMM results between Python/statsmodels and R/lme4. Results: LCMM 96–100% power, LMM 28–50% power (vs. original LCMM 76–100%, LMM 8–22% — the DGP correction produced more credible, not more dramatic, results). Narrative shifted from "LMM is broken" to "LMM is blind to heterogeneity."</div>
             </div>
             <div class="mock-step mock-done">
                 <div class="mock-step-label">Stage 7 · Publish</div>
-                <div class="mock-step-title">28-page preprint submitted to medRxiv</div>
-                <div class="mock-step-detail">Preprint with 5 publication-quality figures, transparent correction notes, and all required statements. All code open source on GitHub. Experiment pages with interactive results on this website. Submitted to medRxiv February 2026.</div>
+                <div class="mock-step-title">30-page preprint (v7) submitted to medRxiv</div>
+                <div class="mock-step-detail">Preprint with 5 publication-quality figures, transparent correction notes, all Lab round findings acknowledged, and all required statements. All code open source on GitHub. Experiment pages with interactive results on this website. Submitted to medRxiv February 2026.</div>
             </div>
         </div>
     </div>
@@ -814,10 +984,11 @@
     <div class="arch-section">
         <h2>§9. What This Isn't</h2>
         <ul>
-            <li><strong>Not autonomous research.</strong> Luvi doesn't independently decide what to investigate or publish. Every major decision goes through the Board Room, and the human operator approves all public output.</li>
-            <li><strong>Not a replacement for peer review.</strong> Board Room deliberation is a thinking tool, not validation. The agents challenge each other, but they're not clinicians with decades of experience. All findings require independent verification.</li>
+            <li><strong>Not autonomous research.</strong> Luvi doesn't independently decide what to investigate or publish. Every major decision goes through deliberation, and the human operator approves all public output.</li>
+            <li><strong>Not a replacement for peer review.</strong> Verification Lab rounds are a quality gate, not external validation. The Lab members challenge each other, but they're not clinicians with decades of experience. All findings require independent human verification before any clinical claims.</li>
+            <li><strong>Not infallible.</strong> The Lab caught four independent instances of missing random effects — but it also missed them in v1 through v6. Systems help; they don't eliminate error. We publish corrections when we find them.</li>
             <li><strong>Not drug development.</strong> We don't claim to rescue failed therapies or discover treatments. We audit methodological assumptions and quantify their consequences.</li>
-            <li><strong>Not performative AI.</strong> The Board Room sessions are published verbatim — including Sable's challenges about whether any of this is worth doing. We publish the disagreements, not just the conclusions.</li>
+            <li><strong>Not performative AI.</strong> The Board Room sessions and Lab round findings are published verbatim — including challenges, disagreements, and Skeptic's demands to prove claims. We publish the friction, not just the conclusions.</li>
         </ul>
     </div>
 
